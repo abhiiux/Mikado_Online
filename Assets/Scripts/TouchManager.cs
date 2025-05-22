@@ -51,7 +51,7 @@ public class TouchManager : MonoBehaviour
         if (Physics.Raycast(ray, out RaycastHit hit, math.INFINITY, layerMask))
         {
             debugUI.text = "Touch detected!";
-            if (hit.transform.CompareTag("Cube"))
+            if (hit.transform.CompareTag("Player"))
             {
                 selectedCube = hit.transform.gameObject;
                 Renderer renderer = selectedCube.GetComponent<Renderer>();

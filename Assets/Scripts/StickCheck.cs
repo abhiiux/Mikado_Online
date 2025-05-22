@@ -6,50 +6,45 @@ using UnityEngine;
 public class StickCheck : MonoBehaviour
 {
     [SerializeField] bool isLog;
+    [SerializeField] float time;
     [SerializeField] TMP_Text text;
-    [SerializeField] GameObject cube;
-    // private float distanceMoved;
-    private Transform[] childTransfrom
+    [SerializeField] float moveThreshold;
+
+    private List<Transform> children
     {
         get
         {
-            Transform[] alltransfroms = GetComponentsInChildren<Transform>();
-            List<Transform> childTransforms = new List<Transform>();
-
-            foreach (Transform t in alltransfroms)
+            List<Transform> childList = new List<Transform>();
+            foreach (Transform child in transform)
             {
-                if (t != transform)
-                {
-                    childTransforms.Add(t);
-                }
+                childList.Add(child);
             }
-            return childTransforms.ToArray();
+            return childList;
         }
     }
     private Dictionary<Transform, Vector3> position = new Dictionary<Transform, Vector3>();
 
-    
+
     void Start()
     {
         StartCoroutine(StorePositions());
     }
     public IEnumerator StorePositions()
-    {
-        yield return new WaitForSeconds(3f);
+    {        
+        yield return new WaitForSeconds(time);
 
-        foreach (var item in childTransfrom)
+        foreach (Transform item in children)
         {
             position.Add(item, item.transform.position);
         }
-        Log("Position stored ");
-        // cube.SetActive(true);
+        Log("Position stored "+ children.Count);
     }
 
     public bool DetectStickMove(GameObject selectedStick)
     {
         foreach (var stick in position.Keys)
         {
-            if (stick.gameObject.name == selectedStick.name)
+            if (stick.gameObject == selectedStick)
                 continue;
 
             float distanceMoved = Vector3.Distance(
@@ -59,13 +54,12 @@ public class StickCheck : MonoBehaviour
 
             Debug.Log($"Distance moved for {stick.name}: {distanceMoved}");
 
-            if (distanceMoved > 0.1f)
+            if (distanceMoved > moveThreshold)
             {
                 Log("Movement Detected!");
                 return true;
             }
         }
-
     Log("No Movement");
     return false;
     }
@@ -85,9 +79,13 @@ public class StickCheck : MonoBehaviour
                 Debug.Log($" an item name {item} is active ");
             }
         }
-        if (obj <= 1)
+        if (obj == 0)
         {
             Log("You Won!");
+        }
+        else
+        {
+            Log(" Nah u Lose!");
         }
     }
 
@@ -95,7 +93,6 @@ public class StickCheck : MonoBehaviour
     {
         if (isLog)
         {
-            // Debug.Log(message);
             text.text = message;
         }
     }

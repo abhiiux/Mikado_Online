@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using UnityEditor.ShaderGraph;
 using UnityEngine;
 
 public class StickCheck : MonoBehaviour
@@ -52,12 +53,14 @@ public class StickCheck : MonoBehaviour
                 stick.transform.position
             );
 
-            Debug.Log($"Distance moved for {stick.name}: {distanceMoved}");
 
             if (distanceMoved > moveThreshold)
             {
                 Log("Movement Detected!");
-                return true;
+                Renderer renderer = selectedStick.GetComponent<Renderer>();
+                renderer.material.color = Color.black;
+                Debug.Log($"Distance moved for {stick.name}: {distanceMoved}");
+                  return true;
             }
         }
     Log("No Movement");

@@ -23,10 +23,6 @@ public class PositionSort : MonoBehaviour
 
     void Start()
     {
-        // for (int i = 0; i < children.Count; i++)
-        // {
-        //     children[i].position += new Vector3(i, 0, 0);
-        // }
         ArrangeInCircle();
     }
 
@@ -34,7 +30,6 @@ public class PositionSort : MonoBehaviour
     {
         var sortedChildren = children;
 
-        // Optional: Sort by Z position first
         if (orderByZ)
         {
             sortedChildren = sortedChildren.OrderBy(t => t.position.z).ToList();

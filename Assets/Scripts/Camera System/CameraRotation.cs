@@ -5,8 +5,9 @@ public class CameraRotation : MonoBehaviour
 {
     [SerializeField] Transform target;
     [SerializeField] float rotationSpeed = 5f;
+    [SerializeField] float heightSpeed = 5f;
     [SerializeField] float orbitRadius = 5f;
-    [SerializeField] float heightOffset = 2f;
+    [SerializeField] private float heightOffset = 5f;
     [SerializeField] InputActionReference keyboardInput;
 
     private float currentAngle = 0f;
@@ -36,6 +37,7 @@ public class CameraRotation : MonoBehaviour
         if (inputDirection != Vector2.zero)
         {
             currentAngle += inputDirection.x * rotationSpeed * Time.deltaTime;
+            heightOffset += inputDirection.y * heightSpeed * Time.deltaTime;
             UpdateCameraPosition();
         }
     }

@@ -80,7 +80,7 @@
                 },
                 {
                     "name": "2D Vector",
-                    "id": "6269fac5-c009-40d0-a3ba-08a61cae0425",
+                    "id": "273a955b-b72a-496e-9c71-e3a8189ad774",
                     "path": "2DVector",
                     "interactions": "",
                     "processors": "",
@@ -90,9 +90,31 @@
                     "isPartOfComposite": false
                 },
                 {
+                    "name": "up",
+                    "id": "3ba06fca-4e45-48fa-ab63-938897e32135",
+                    "path": "<Keyboard>/w",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Rotate",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "down",
+                    "id": "82035bbb-7870-40fb-b94c-0a67de0b7159",
+                    "path": "<Keyboard>/s",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Rotate",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
                     "name": "left",
-                    "id": "6cf0695f-5e72-4d00-bee2-85885c21f188",
-                    "path": "<Keyboard>/a",
+                    "id": "66acd5bd-e05f-4f12-858a-77ca3d03cf56",
+                    "path": "<Keyboard>/d",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -102,8 +124,8 @@
                 },
                 {
                     "name": "right",
-                    "id": "0d3e1ad7-daea-49e7-8a3a-3a19241bffe7",
-                    "path": "<Keyboard>/d",
+                    "id": "d56e4328-d856-4ab0-b51e-6d2486516220",
+                    "path": "<Keyboard>/a",
                     "interactions": "",
                     "processors": "",
                     "groups": "",

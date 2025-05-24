@@ -51,15 +51,14 @@ public class TouchManager : MonoBehaviour
         if (Physics.Raycast(ray, out RaycastHit hit, math.INFINITY, layerMask))
         {
             debugUI.text = "Touch detected!";
-            if (hit.transform.CompareTag("Player"))
-            {
+
                 selectedCube = hit.transform.gameObject;
                 Renderer renderer = selectedCube.GetComponent<Renderer>();
                 renderer.material.color = Color.blue;
                 dragOffset = selectedCube.transform.position - mainCamera.ScreenToWorldPoint(new Vector3(mousePos.x, mousePos.y, 10f));
                 isDragging = true;
                 selectedCube.GetComponent<Rigidbody>().useGravity = false;
-            }
+            
         }
         else
         {

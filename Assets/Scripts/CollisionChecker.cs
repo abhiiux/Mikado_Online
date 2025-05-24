@@ -1,12 +1,41 @@
+using System;
 using UnityEngine;
 
 public class CollisionChecker : MonoBehaviour
 {
+    public static event Action<int> OnCollision;
+    
+
     void OnCollisionEnter(Collision collision)
     {
-        if (collision.gameObject.CompareTag("Bin"))
+        string tag = collision.gameObject.tag;
+
+        switch (tag)
         {
-            TakeThis(this.gameObject);
+            case "Red":
+                OnCollision(10);
+                TakeThis(collision.gameObject);
+                break;
+
+            case "Green":
+                OnCollision(5);
+                TakeThis(collision.gameObject);
+                break;
+
+            case "White":
+                OnCollision(15);
+                TakeThis(collision.gameObject);
+                break;
+
+            case "Yellow":
+                OnCollision(1);
+                TakeThis(collision.gameObject);
+                break;
+
+            default:
+                OnCollision(0);
+                TakeThis(collision.gameObject);
+                break;
         }
     }
     public void TakeThis(GameObject obj)

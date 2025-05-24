@@ -4,8 +4,10 @@
 TagManager:
   serializedVersion: 3
   tags:
-  - Cube
-  - Bin
+  - Red
+  - Green
+  - White
+  - Yellow
   layers:
   - Default
   - TransparentFX

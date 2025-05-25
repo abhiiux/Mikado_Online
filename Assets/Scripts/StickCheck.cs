@@ -58,18 +58,18 @@ public class StickCheck : MonoBehaviour
             if (distanceMoved > moveThreshold)
             {
                 Log("Movement Detected!");
-                selectedStick.tag = "Finish";
+                Debug.Log($"Distance moved for {stick.name}: {distanceMoved}");
+
                 Renderer renderer = selectedStick.GetComponent<Renderer>();
+                ObjectPoints obj = selectedStick.GetComponent<ObjectPoints>();
                 // Renderer moverenderer = stick.GetComponent<Renderer>();
                 // HitBlink(moverenderer);
                 renderer.material.color = Color.black;
-
-                Debug.Log($"Distance moved for {stick.name}: {distanceMoved}");
-                //   return true;
+                int pointsLeft = obj.Points;
+                obj.Points = 0;
             }
         }
     Log("No Movement");
-    // return false;
     }
     public void OnStickCollected(GameObject stick)
     {

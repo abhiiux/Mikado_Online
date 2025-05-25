@@ -2,15 +2,20 @@ using UnityEngine;
 
 public class ObjectPoints : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    [SerializeField] private int _points;
+    [SerializeField] private string nameStick;
+    [HideInInspector] public bool isPoints = false;
+
+    public int Points
     {
-        
+        get
+        {
+            return _points;
+        }
+        set
+        {
+            _points = value;
+        }
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-}
+}   

@@ -10,6 +10,7 @@ public class StickCheck : MonoBehaviour
     [SerializeField] float time;
     [SerializeField] TMP_Text text;
     [SerializeField] float moveThreshold;
+    private bool isposTake;
 
     private List<Transform> children
     {
@@ -38,10 +39,11 @@ public class StickCheck : MonoBehaviour
         {
             position.Add(item, item.transform.position);
         }
-        Log("Position stored "+ children.Count);
+        isposTake = true;
+        Log("Position stored "+ children.Count+" and bool is "+isposTake);
     }
 
-    public bool DetectStickMove(GameObject selectedStick)
+    public void DetectStickMove(GameObject selectedStick)
     {
         foreach (var stick in position.Keys)
         {
@@ -50,21 +52,24 @@ public class StickCheck : MonoBehaviour
 
             float distanceMoved = Vector3.Distance(
                 position[stick],
-                stick.transform.position
-            );
+                stick.transform.position);     // Comparing positions to detect any movement!
 
 
             if (distanceMoved > moveThreshold)
             {
                 Log("Movement Detected!");
+                selectedStick.tag = "Finish";
                 Renderer renderer = selectedStick.GetComponent<Renderer>();
+                // Renderer moverenderer = stick.GetComponent<Renderer>();
+                // HitBlink(moverenderer);
                 renderer.material.color = Color.black;
+
                 Debug.Log($"Distance moved for {stick.name}: {distanceMoved}");
-                  return true;
+                //   return true;
             }
         }
     Log("No Movement");
-    return false;
+    // return false;
     }
     public void OnStickCollected(GameObject stick)
     {
@@ -91,7 +96,16 @@ public class StickCheck : MonoBehaviour
             Log(" Nah u Lose!");
         }
     }
-
+    private void HitBlink(Renderer renderer)
+    {
+        renderer.material.SetFloat("_colorIntensity", 1f);
+        renderer.material.SetFloat("_colorIntensity", 0f);
+        // renderer.
+    }
+    public bool GetStatus()
+    {
+        return isposTake;
+    }
     private void Log(string message)
     {
         if (isLog)

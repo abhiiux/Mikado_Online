@@ -6,7 +6,7 @@ public class ScoreSystem : MonoBehaviour
     [SerializeField] TMP_Text scoreUI;
     private int currentScore;
     private int scoretoWin = 25;
-    private int totalavailableScore = 25;
+    private int totalavailableScore = 31;
 
 
     void OnEnable()
@@ -18,19 +18,18 @@ public class ScoreSystem : MonoBehaviour
         CollisionChecker.OnCollision -= Checker;
     }
 
-    public void Checker(int score)
+    public void Checker(int score,string print)
     {
         currentScore += score;
-        totalavailableScore -= score;
         scoreUI.text = currentScore.ToString();
 
         if (currentScore >= scoretoWin)
         {
-            Debug.Log(" YOU WIN!");
+            Debug.Log(" YOU WIN!"+print);
         }
         else if (totalavailableScore < scoretoWin)
         {
-            Debug.Log(" YOU Losssee!");
+            Debug.Log(" YOU Losssee!"+totalavailableScore+" " +print);
         }
     }
 }

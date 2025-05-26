@@ -7,7 +7,6 @@ public class TouchManager : MonoBehaviour
 {
     [SerializeField] StickCheck stickCheck;
     [SerializeField] TMP_Text debugUI;
-    private bool isStarted;
     private LayerMask layerMask;
     private Camera mainCamera;
     private Vector2 mousePos;

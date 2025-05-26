@@ -11,6 +11,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Makido-1 2.unity
     guid: ecfd001f9c64143fb9d062a207e983ed
+  - enabled: 1
+    path: Assets/Scenes/Makido-1 1.unity
+    guid: 5523b97fa2a314f2a97235caa279f49b
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   m_UseUCBPForAssetBundles: 0

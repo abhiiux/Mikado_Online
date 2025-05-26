@@ -3,39 +3,24 @@ using UnityEngine;
 
 public class CollisionChecker : MonoBehaviour
 {
-    public static event Action<int> OnCollision;
-    
+    public static event Action<int,bool> OnCollision;
+
 
     void OnCollisionEnter(Collision collision)
     {
-        string tag = collision.gameObject.tag;
+        ObjectPoints obj = collision.gameObject.GetComponent<ObjectPoints>();
 
-        switch (tag)
+        if (obj.isFlagged)
         {
-            case "Red":
-                OnCollision(10);
-                TakeThis(collision.gameObject);
-                break;
-
-            case "Green":
-                OnCollision(5);
-                TakeThis(collision.gameObject);
-                break;
-
-            case "White":
-                OnCollision(15);
-                TakeThis(collision.gameObject);
-                break;
-
-            case "Yellow":
-                OnCollision(1);
-                TakeThis(collision.gameObject);
-                break;
-
-            default:
-                OnCollision(0);
-                TakeThis(collision.gameObject);
-                break;
+            int score = obj.Points;
+            OnCollision(score, false);
+            TakeThis(collision.gameObject);
+        }
+        else
+        {
+            int score = obj.Points;
+            OnCollision(score, true);
+            TakeThis(collision.gameObject);
         }
     }
     public void TakeThis(GameObject obj)

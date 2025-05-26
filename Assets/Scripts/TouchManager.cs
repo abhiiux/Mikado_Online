@@ -42,7 +42,11 @@ public class TouchManager : MonoBehaviour
 
     private void OnMouseMove(InputAction.CallbackContext context)
     {
-        mousePos = context.ReadValue<Vector2>();
+        bool canMove = stickCheck.GetStatus();
+        if (canMove)
+        {
+            mousePos = context.ReadValue<Vector2>();
+        }
     }
 
     private void OnClick(InputAction.CallbackContext context)
@@ -52,12 +56,12 @@ public class TouchManager : MonoBehaviour
         {
             debugUI.text = "Touch detected!";
 
-                selectedCube = hit.transform.gameObject;
-                Renderer renderer = selectedCube.GetComponent<Renderer>();
-                renderer.material.color = Color.blue;
-                dragOffset = selectedCube.transform.position - mainCamera.ScreenToWorldPoint(new Vector3(mousePos.x, mousePos.y, 10f));
-                isDragging = true;
-                selectedCube.GetComponent<Rigidbody>().useGravity = false;
+            selectedCube = hit.transform.gameObject;
+            Renderer renderer = selectedCube.GetComponent<Renderer>();
+            renderer.material.color = Color.blue;
+            dragOffset = selectedCube.transform.position - mainCamera.ScreenToWorldPoint(new Vector3(mousePos.x, mousePos.y, 10f));
+            isDragging = true;
+            selectedCube.GetComponent<Rigidbody>().useGravity = false;
             
         }
         else

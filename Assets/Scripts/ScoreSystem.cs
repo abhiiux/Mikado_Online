@@ -4,9 +4,11 @@ using UnityEngine;
 public class ScoreSystem : MonoBehaviour
 {
     [SerializeField] TMP_Text scoreUI;
+    [SerializeField] GameObject winUI;
+    [SerializeField] GameObject lostUI;
+    [SerializeField] int scoretoWin = 25;
+    [SerializeField] int totalavailableScore = 31;
     private int currentScore;
-    private int scoretoWin = 25;
-    private int totalavailableScore = 25;
 
 
     void OnEnable()
@@ -18,19 +20,30 @@ public class ScoreSystem : MonoBehaviour
         CollisionChecker.OnCollision -= Checker;
     }
 
-    public void Checker(int score)
+    public void Checker(int score, bool value)
     {
-        currentScore += score;
-        totalavailableScore -= score;
-        scoreUI.text = currentScore.ToString();
+        switch (value)
+        {
+            case true:
+                currentScore += score;
+                scoreUI.text = $"{currentScore.ToString()} / {scoretoWin}";
+                if (currentScore >= scoretoWin)
+                {
+                    Debug.Log($"current score is {currentScore}");
+                    winUI.SetActive(true);
+                }
+                break;
 
-        if (currentScore >= scoretoWin)
-        {
-            Debug.Log(" YOU WIN!");
-        }
-        else if (totalavailableScore < scoretoWin)
-        {
-            Debug.Log(" YOU Losssee!");
+            case false:
+
+                totalavailableScore -= score;
+                if (totalavailableScore < scoretoWin)
+                {
+                    Debug.Log($" total available score is {totalavailableScore}");
+                    lostUI.SetActive(true);
+                }
+                break;
         }
     }
+
 }

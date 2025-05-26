@@ -1,15 +1,17 @@
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
-using UnityEditor.ShaderGraph;
 using UnityEngine;
 
 public class StickCheck : MonoBehaviour
 {
+    [SerializeField] TMP_Text noOfSticks;
     [SerializeField] bool isLog;
     [SerializeField] float time;
     [SerializeField] TMP_Text text;
     [SerializeField] float moveThreshold;
+    private bool isposTake;
+    private int stickCount;
 
     private List<Transform> children
     {
@@ -28,21 +30,25 @@ public class StickCheck : MonoBehaviour
 
     void Start()
     {
-        StartCoroutine(StorePositions());
+        StartCoroutine(StartGame());
     }
-    public IEnumerator StorePositions()
-    {        
+    public IEnumerator StartGame()
+    {
+        Log("please wait until sticks are settle");
         yield return new WaitForSeconds(time);
-
         foreach (Transform item in children)
         {
             position.Add(item, item.transform.position);
-        }
+        }  
+        isposTake = true;
+        noOfSticks.text = children.Count.ToString();
         Log("Position stored "+ children.Count);
+        Log("Goo!");
     }
 
-    public bool DetectStickMove(GameObject selectedStick)
+    public void DetectStickMove(GameObject selectedStick)
     {
+        List<Transform> sticksToUpdate = new List<Transform>();
         foreach (var stick in position.Keys)
         {
             if (stick.gameObject == selectedStick)
@@ -50,48 +56,43 @@ public class StickCheck : MonoBehaviour
 
             float distanceMoved = Vector3.Distance(
                 position[stick],
-                stick.transform.position
-            );
-
+                stick.transform.position);     // Comparing positions to detect any movement!
 
             if (distanceMoved > moveThreshold)
             {
                 Log("Movement Detected!");
-                Renderer renderer = selectedStick.GetComponent<Renderer>();
-                renderer.material.color = Color.black;
                 Debug.Log($"Distance moved for {stick.name}: {distanceMoved}");
-                  return true;
+
+                Renderer renderer = selectedStick.GetComponent<Renderer>();
+                ObjectPoints obj = selectedStick.GetComponent<ObjectPoints>();
+
+                renderer.material.color = Color.black;
+                obj.isFlagged = true;
+
+                sticksToUpdate.Add(stick);              //Storing new position
             }
         }
+    foreach (Transform stick in sticksToUpdate)    // Updating new position
+    {
+        position[stick] = stick.transform.position;
+    }
     Log("No Movement");
-    return false;
     }
     public void OnStickCollected(GameObject stick)
     {
         position.Remove(stick.gameObject.transform); 
     }
-    public void Finished()
-    {
-        Debug.Log("Button press detected");
-        int obj = 0;
-        foreach (Transform item in position.Keys)
-        {
-            if (item.gameObject.activeInHierarchy)
-            {
-                obj++;
-                Debug.Log($" an item name {item} is active ");
-            }
-        }
-        if (obj == 0)
-        {
-            Log("You Won!");
-        }
-        else
-        {
-            Log(" Nah u Lose!");
-        }
-    }
 
+    // private void HitBlink(Renderer renderer)
+    // {
+    //     renderer.material.SetFloat("_colorIntensity", 1f);
+    //     renderer.material.SetFloat("_colorIntensity", 0f);
+    //     // renderer.
+    // }
+    public bool GetStatus()
+    {
+        return isposTake;
+    }
     private void Log(string message)
     {
         if (isLog)

@@ -32,7 +32,8 @@ public class StickCheck : MonoBehaviour
         StartCoroutine(StorePositions());
     }
     public IEnumerator StorePositions()
-    {        
+    {
+        Log("please wait until sticks are settle");
         yield return new WaitForSeconds(time);
 
         foreach (Transform item in children)
@@ -40,7 +41,8 @@ public class StickCheck : MonoBehaviour
             position.Add(item, item.transform.position);
         }
         isposTake = true;
-        Log("Position stored "+ children.Count+" and bool is "+isposTake);
+        // Log("Position stored "+ children.Count+" and bool is "+isposTake);
+        Log("Goo!");
     }
 
     public void DetectStickMove(GameObject selectedStick)
@@ -62,11 +64,13 @@ public class StickCheck : MonoBehaviour
 
                 Renderer renderer = selectedStick.GetComponent<Renderer>();
                 ObjectPoints obj = selectedStick.GetComponent<ObjectPoints>();
-                // Renderer moverenderer = stick.GetComponent<Renderer>();
-                // HitBlink(moverenderer);
+
                 renderer.material.color = Color.black;
-                int pointsLeft = obj.Points;
-                obj.Points = 0;
+                obj.isFlagged = true;
+             // Renderer moverenderer = stick.GetComponent<Renderer>();
+                // HitBlink(moverenderer);                   
+                // int pointsLeft = obj.Points;
+                // obj.Points = 0;
             }
         }
     Log("No Movement");

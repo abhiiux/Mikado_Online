@@ -20,26 +20,28 @@ public class ScoreSystem : MonoBehaviour
         CollisionChecker.OnCollision -= Checker;
     }
 
-    public void Checker(int score, string print)
+    public void Checker(int score, bool value)
     {
-        currentScore += score;
-        scoreUI.text = currentScore.ToString();
+        switch (value)
+        {
+            case true:
+                currentScore += score;
+                scoreUI.text = currentScore.ToString();
+                if (currentScore >= scoretoWin)
+                {
+                    Debug.Log($"current score is {currentScore}");
+                    winUI.SetActive(true);
+                }                break;
 
-        if (currentScore >= scoretoWin)
-        {
-            Debug.Log(" YOU WIN!" + print);
-            winUI.SetActive(true);
-        }
-        else if (totalavailableScore < scoretoWin)
-        {
-            Debug.Log(" YOU Losssee!" + totalavailableScore + " " + print);
-            lostUI.SetActive(true);
+            case false:
+
+                totalavailableScore -= score;
+                if (totalavailableScore < scoretoWin)
+                {
+                    Debug.Log($" total available score is {totalavailableScore}");
+                    lostUI.SetActive(true);
+                }                break;
         }
     }
 
-    public void SetValue(int num)
-    {
-        totalavailableScore -= num;
-        Debug.Log(" total points left in the board is : " + totalavailableScore);
-    }
 }

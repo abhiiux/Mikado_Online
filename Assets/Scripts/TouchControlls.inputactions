@@ -11,8 +11,8 @@
                     "id": "ea2fe83f-d81c-469f-a245-89c3c97631df",
                     "expectedControlType": "",
                     "processors": "",
-                    "interactions": "Press",
-                    "initialStateCheck": false
+                    "interactions": "",
+                    "initialStateCheck": true
                 },
                 {
                     "name": "Move",

@@ -7,6 +7,8 @@ public class TouchManager : MonoBehaviour
 {
     [SerializeField] StickCheck stickCheck;
     [SerializeField] TMP_Text debugUI;
+    private string shaderVar = "_colorIntensity";
+    private Renderer cube;
     private LayerMask layerMask;
     private Camera mainCamera;
     private Vector2 mousePos;
@@ -28,14 +30,14 @@ public class TouchManager : MonoBehaviour
         clickAction.action.Enable();
         mousePosAction.action.Enable();
 
-        clickAction.action.performed += OnClick;
+        clickAction.action.started += OnClick;
         clickAction.action.canceled += OnRelease;
         mousePosAction.action.performed += OnMouseMove;
     }
 
     private void OnDisable()
     {
-        clickAction.action.performed -= OnClick;
+        clickAction.action.started -= OnClick;
         clickAction.action.canceled -= OnRelease;
         mousePosAction.action.performed -= OnMouseMove;
     }
@@ -57,12 +59,12 @@ public class TouchManager : MonoBehaviour
             debugUI.text = "Touch detected!";
 
             selectedCube = hit.transform.gameObject;
-            Renderer renderer = selectedCube.GetComponent<Renderer>();
-            renderer.material.color = Color.blue;
+            cube = selectedCube.GetComponent<Renderer>();
+            // cube.material.color = Color.blue;
+            cube.material.SetFloat(shaderVar, 1f);
             dragOffset = selectedCube.transform.position - mainCamera.ScreenToWorldPoint(new Vector3(mousePos.x, mousePos.y, 10f));
             isDragging = true;
             selectedCube.GetComponent<Rigidbody>().useGravity = false;
-            
         }
         else
         {
@@ -74,6 +76,7 @@ public class TouchManager : MonoBehaviour
     {
         if (isDragging && selectedCube != null)
         {
+            cube.material.SetFloat(shaderVar, 0f);
             stickCheck.DetectStickMove(selectedCube);
             stickCheck.OnStickCollected(selectedCube);
             selectedCube.GetComponent<Rigidbody>().useGravity = true;

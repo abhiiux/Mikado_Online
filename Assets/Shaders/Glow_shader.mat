@@ -46,8 +46,13 @@ Material:
     - _QueueOffset: 0
     - _blinkRate: 0
     - _colorIntensity: 0
+    - _damageColor: 0
+    - _damageEffect: 20
+    - _damagecolorIntensity: 0
+    - _selectionColor: 0
     m_Colors:
-    - _baseColor: {r: 4.030425, g: 0, b: 0, a: 0}
+    - _baseColor: {r: 7.1839705, g: 7.1839705, b: 7.1839705, a: 0}
+    - _damageColor: {r: 1, g: 0, b: 0, a: 0}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
 --- !u!114 &7782398870848349324

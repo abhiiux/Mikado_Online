@@ -5,9 +5,10 @@ using UnityEngine;
 
 public class StickCheck : MonoBehaviour
 {
+    [SerializeField] ShaderControls shaderControls;
     [SerializeField] TMP_Text noOfSticks;
     [SerializeField] bool isLog;
-    [SerializeField] float time;
+    [SerializeField] float gamestartTime;
     [SerializeField] TMP_Text text;
     [SerializeField] float moveThreshold;
     private bool isposTake;
@@ -35,7 +36,7 @@ public class StickCheck : MonoBehaviour
     public IEnumerator StartGame()
     {
         Log("please wait until sticks are settle");
-        yield return new WaitForSeconds(time);
+        yield return new WaitForSeconds(gamestartTime);
         foreach (Transform item in children)
         {
             position.Add(item, item.transform.position);
@@ -48,7 +49,7 @@ public class StickCheck : MonoBehaviour
 
     public void DetectStickMove(GameObject selectedStick)
     {
-        List<Transform> sticksToUpdate = new List<Transform>();
+        List<GameObject> sticksToUpdate = new List<GameObject>();
         foreach (var stick in position.Keys)
         {
             if (stick.gameObject == selectedStick)
@@ -60,6 +61,8 @@ public class StickCheck : MonoBehaviour
 
             if (distanceMoved > moveThreshold)
             {
+                sticksToUpdate.Add(stick.gameObject);              //Storing new position
+                shaderControls.DamageGlow(sticksToUpdate);
                 Log("Movement Detected!");
                 Debug.Log($"Distance moved for {stick.name}: {distanceMoved}");
 
@@ -69,19 +72,20 @@ public class StickCheck : MonoBehaviour
                 renderer.material.color = Color.black;
                 obj.isFlagged = true;
 
-                sticksToUpdate.Add(stick);              //Storing new position
             }
         }
-    foreach (Transform stick in sticksToUpdate)    // Updating new position
+    foreach (GameObject storedsticks in sticksToUpdate)    // Updating new position
     {
-        position[stick] = stick.transform.position;
+        position[storedsticks.transform] = storedsticks.transform.position;
     }
     Log("No Movement");
     }
+
     public void OnStickCollected(GameObject stick)
     {
-        position.Remove(stick.gameObject.transform); 
+        position.Remove(stick.gameObject.transform);
     }
+    
 
     // private void HitBlink(Renderer renderer)
     // {

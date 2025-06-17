@@ -5,9 +5,9 @@ using UnityEngine.InputSystem;
 
 public class TouchManager : MonoBehaviour
 {
+    [SerializeField] ShaderControls shaderControls;
     [SerializeField] StickCheck stickCheck;
     [SerializeField] TMP_Text debugUI;
-    private string shaderVar = "_colorIntensity";
     private Renderer cube;
     private LayerMask layerMask;
     private Camera mainCamera;
@@ -60,8 +60,9 @@ public class TouchManager : MonoBehaviour
 
             selectedCube = hit.transform.gameObject;
             cube = selectedCube.GetComponent<Renderer>();
+            shaderControls.SelectionGlow(cube);
             // cube.material.color = Color.blue;
-            cube.material.SetFloat(shaderVar, 1f);
+            // cube.material.SetFloat(shaderVar, 1f);
             dragOffset = selectedCube.transform.position - mainCamera.ScreenToWorldPoint(new Vector3(mousePos.x, mousePos.y, 10f));
             isDragging = true;
             selectedCube.GetComponent<Rigidbody>().useGravity = false;
@@ -76,7 +77,7 @@ public class TouchManager : MonoBehaviour
     {
         if (isDragging && selectedCube != null)
         {
-            cube.material.SetFloat(shaderVar, 0f);
+            // cube.material.SetFloat(shaderVar, 0f);
             stickCheck.DetectStickMove(selectedCube);
             stickCheck.OnStickCollected(selectedCube);
             selectedCube.GetComponent<Rigidbody>().useGravity = true;

@@ -1,2 +1,2 @@
-# Mikado_Online
-A simple puzzle game inspired from "Mikado Spiel," involves carefully removing sticks from a pile without disturbing the others. It's a game of patience and skill.
+# Mikado_StickGame
+A Stick Pick Up game inspired from the a board game with the same name.

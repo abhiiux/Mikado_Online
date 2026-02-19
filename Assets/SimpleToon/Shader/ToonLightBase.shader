@@ -5,22 +5,8 @@ Shader "Lpk/LightModel/ToonLightBase"
         _BaseMap            ("Texture", 2D)                       = "white" {}
         _BaseColor          ("Color", Color)                      = (0.5,0.5,0.5,1)
         
-        [Space]
-        _ShadowStep         ("ShadowStep", Range(0, 1))           = 0.5
-        _ShadowStepSmooth   ("ShadowStepSmooth", Range(0, 1))     = 0.04
-        
-        [Space] 
-        _SpecularStep       ("SpecularStep", Range(0, 1))         = 0.6
-        _SpecularStepSmooth ("SpecularStepSmooth", Range(0, 1))   = 0.05
-        [HDR]_SpecularColor ("SpecularColor", Color)              = (1,1,1,1)
-        
-        [Space]
-        _RimStep            ("RimStep", Range(0, 1))              = 0.65
-        _RimStepSmooth      ("RimStepSmooth",Range(0,1))          = 0.4
-        _RimColor           ("RimColor", Color)                   = (1,1,1,1)
-        
         [Space]   
-        _OutlineWidth      ("OutlineWidth", Range(0.0, 1.0))      = 0.15
+        [Toggle] _OutlineWidth ("OutlineWidth", Float) = 1
         _OutlineColor      ("OutlineColor", Color)                = (0.0, 0.0, 0.0, 1)
     }
     SubShader
@@ -59,14 +45,6 @@ Shader "Lpk/LightModel/ToonLightBase"
 
             CBUFFER_START(UnityPerMaterial)
                 float4 _BaseColor;
-                float _ShadowStep;
-                float _ShadowStepSmooth;
-                float _SpecularStep;
-                float _SpecularStepSmooth;
-                float4 _SpecularColor;
-                float _RimStepSmooth;
-                float _RimStep;
-                float4 _RimColor;
             CBUFFER_END
 
             struct Attributes
@@ -130,38 +108,21 @@ Shader "Lpk/LightModel/ToonLightBase"
                 float3 B = normalize(input.bitangentWS.xyz);
                 float3 V = normalize(input.viewDirWS.xyz);
                 float3 L = normalize(_MainLightPosition.xyz);
-                float3 H = normalize(V+L);
-                
-                float NV = dot(N,V);
-                float NH = dot(N,H);
-                float NL = dot(N,L);
-                
-                NL = NL * 0.5 + 0.5;
 
                 float4 baseMap = SAMPLE_TEXTURE2D(_BaseMap, sampler_BaseMap, uv);
-
-                // return NH;
-               float specularNH = smoothstep((1-_SpecularStep * 0.05)  - _SpecularStepSmooth * 0.05, (1-_SpecularStep* 0.05)  + _SpecularStepSmooth * 0.05, NH) ;
-               float shadowNL = smoothstep(_ShadowStep - _ShadowStepSmooth, _ShadowStep + _ShadowStepSmooth, NL);
 
 				input.shadowCoord = TransformWorldToShadowCoord(input.positionWS);
                 
                 //shadow
                 float shadow = MainLightRealtimeShadow(input.shadowCoord);
                 
-                //rim
-                float rim = smoothstep((1-_RimStep) - _RimStepSmooth * 0.5, (1-_RimStep) + _RimStepSmooth * 0.5, 0.5 - NV);
-                
                 //diffuse
-                float3 diffuse = _MainLightColor.rgb * baseMap * _BaseColor * shadowNL * shadow;
-                
-                //specular
-                float3 specular = _SpecularColor * shadow * shadowNL *  specularNH;
+                float3 diffuse = _MainLightColor.rgb * baseMap * _BaseColor * shadow;
                 
                 //ambient
-                float3 ambient =  rim * _RimColor + SampleSH(N) * _BaseColor * baseMap;
+                float3 ambient = SampleSH(N) * _BaseColor * baseMap;
             
-                float3 finalColor = diffuse + ambient + specular;
+                float3 finalColor = diffuse + ambient;
                 finalColor = MixFog(finalColor, input.fogCoord);
                 return float4(finalColor , 1.0);
             }
@@ -203,7 +164,8 @@ Shader "Lpk/LightModel/ToonLightBase"
             {
                 v2f o;
                 VertexPositionInputs vertexInput = GetVertexPositionInputs(v.vertex.xyz);
-                o.pos = TransformObjectToHClip(float4(v.vertex.xyz + v.normal * _OutlineWidth * 0.1 ,1));
+                float outlineWidth = (_OutlineWidth > 0.5) ? 1.0 : 0.0;
+                o.pos = TransformObjectToHClip(float4(v.vertex.xyz + v.normal * outlineWidth * 0.1 ,1));
                 o.fogCoord = ComputeFogFactor(vertexInput.positionCS.z);
 
                 return o;

@@ -9,6 +9,11 @@ public class ShaderControls : MonoBehaviour
         stick.material.SetFloat("_selectionColor", 1f);
         stick.material.SetFloat("_blinkRate", 5f);
     }
+    public void SelectionOutline(Renderer stick, float value)
+    {
+        stick.material.SetFloat("_OutlineWidth", value);
+    }
+    
 
     public void DamageGlow(List<GameObject> value)
     {

@@ -1,3 +1,4 @@
+using System.Xml;
 using TMPro;
 using Unity.Mathematics;
 using UnityEngine;
@@ -9,6 +10,7 @@ public class TouchManager : MonoBehaviour
     [SerializeField] StickCheck stickCheck;
     [SerializeField] TMP_Text debugUI;
     private Renderer cube;
+    private Renderer hoveredRenderer;
     private LayerMask layerMask;
     private Camera mainCamera;
     private Vector2 mousePos;
@@ -48,6 +50,37 @@ public class TouchManager : MonoBehaviour
         if (canMove)
         {
             mousePos = context.ReadValue<Vector2>();
+            CheckHoverOnLayerMask();
+        }
+    }
+
+    private void CheckHoverOnLayerMask()
+    {
+        Ray ray = mainCamera.ScreenPointToRay(mousePos);
+        if (Physics.Raycast(ray, out RaycastHit hit, math.INFINITY, layerMask))
+        {
+            Debug.Log("yes");
+            Renderer currentRenderer = hit.transform.GetComponent<Renderer>();
+
+            if (hoveredRenderer != null && hoveredRenderer != currentRenderer)
+            {
+                shaderControls.SelectionOutline(hoveredRenderer, 0f);
+            }
+
+            if (currentRenderer != null)
+            {
+                shaderControls.SelectionOutline(currentRenderer, 1f);
+                hoveredRenderer = currentRenderer;
+            }
+        }
+        else
+        {
+            Debug.Log("no");
+            if (hoveredRenderer != null)
+            {
+                shaderControls.SelectionOutline(hoveredRenderer, 0f);
+                hoveredRenderer = null;
+            }
         }
     }
 
@@ -60,9 +93,8 @@ public class TouchManager : MonoBehaviour
 
             selectedCube = hit.transform.gameObject;
             cube = selectedCube.GetComponent<Renderer>();
-            shaderControls.SelectionGlow(cube);
-            // cube.material.color = Color.blue;
-            // cube.material.SetFloat(shaderVar, 1f);
+            shaderControls.SelectionOutline(cube, 1f);
+            // cube.material.SetFloat("_OutlineWidth", 1f);
             dragOffset = selectedCube.transform.position - mainCamera.ScreenToWorldPoint(new Vector3(mousePos.x, mousePos.y, 10f));
             isDragging = true;
             selectedCube.GetComponent<Rigidbody>().useGravity = false;
@@ -77,7 +109,7 @@ public class TouchManager : MonoBehaviour
     {
         if (isDragging && selectedCube != null)
         {
-            // cube.material.SetFloat(shaderVar, 0f);
+            shaderControls.SelectionOutline(cube, 0f);
             stickCheck.DetectStickMove(selectedCube);
             stickCheck.OnStickCollected(selectedCube);
             selectedCube.GetComponent<Rigidbody>().useGravity = true;

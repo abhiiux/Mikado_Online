@@ -13,6 +13,52 @@ public class ShaderControls : MonoBehaviour
     {
         stick.material.SetFloat("_OutlineWidth", value);
     }
+
+    public void SelectionOutlineColor(Renderer stick, Color color)
+    {
+        Material mat = stick.material;
+        if (mat.HasProperty("_OutlineColor"))
+        {
+            mat.SetColor("_OutlineColor", color);
+            return;
+        }
+
+        if (mat.HasProperty("_RimColor"))
+        {
+            mat.SetColor("_RimColor", color);
+            return;
+        }
+
+        if (mat.HasProperty("_EdgeColor"))
+        {
+            mat.SetColor("_EdgeColor", color);
+        }
+    }
+
+    public bool TryGetOutlineColor(Renderer stick, out Color color)
+    {
+        Material mat = stick.material;
+        if (mat.HasProperty("_OutlineColor"))
+        {
+            color = mat.GetColor("_OutlineColor");
+            return true;
+        }
+
+        if (mat.HasProperty("_RimColor"))
+        {
+            color = mat.GetColor("_RimColor");
+            return true;
+        }
+
+        if (mat.HasProperty("_EdgeColor"))
+        {
+            color = mat.GetColor("_EdgeColor");
+            return true;
+        }
+
+        color = Color.white;
+        return false;
+    }
     
 
     public void DamageGlow(List<GameObject> value)

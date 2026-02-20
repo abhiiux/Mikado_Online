@@ -17,6 +17,8 @@ public class TouchManager : MonoBehaviour
     private GameObject selectedCube;
     private bool isDragging;
     private Vector3 dragOffset;
+    private Color previousOutlineColor;
+    private bool hasPreviousOutlineColor;
 
     public InputActionReference clickAction;
     public InputActionReference mousePosAction;
@@ -64,7 +66,10 @@ public class TouchManager : MonoBehaviour
 
             if (hoveredRenderer != null && hoveredRenderer != currentRenderer)
             {
-                shaderControls.SelectionOutline(hoveredRenderer, 0f);
+                if (!IsSelectedRenderer(hoveredRenderer))
+                {
+                    shaderControls.SelectionOutline(hoveredRenderer, 0f);
+                }
             }
 
             if (currentRenderer != null)
@@ -78,10 +83,18 @@ public class TouchManager : MonoBehaviour
             Debug.Log("no");
             if (hoveredRenderer != null)
             {
-                shaderControls.SelectionOutline(hoveredRenderer, 0f);
-                hoveredRenderer = null;
+                if (!IsSelectedRenderer(hoveredRenderer))
+                {
+                    shaderControls.SelectionOutline(hoveredRenderer, 0f);
+                    hoveredRenderer = null;
+                }
             }
         }
+    }
+
+    private bool IsSelectedRenderer(Renderer renderer)
+    {
+        return isDragging && selectedCube != null && cube != null && renderer == cube;
     }
 
     private void OnClick(InputAction.CallbackContext context)
@@ -89,10 +102,18 @@ public class TouchManager : MonoBehaviour
         Ray ray = mainCamera.ScreenPointToRay(mousePos);
         if (Physics.Raycast(ray, out RaycastHit hit, math.INFINITY, layerMask))
         {
+            bool isInLayerMask = (layerMask.value & (1 << hit.transform.gameObject.layer)) != 0;
+            if (!isInLayerMask)
+            {
+                return;
+            }
+
             debugUI.text = "Touch detected!";
 
             selectedCube = hit.transform.gameObject;
             cube = selectedCube.GetComponent<Renderer>();
+            hasPreviousOutlineColor = shaderControls.TryGetOutlineColor(cube, out previousOutlineColor);
+            shaderControls.SelectionOutlineColor(cube, Color.blue);
             shaderControls.SelectionOutline(cube, 1f);
             // cube.material.SetFloat("_OutlineWidth", 1f);
             dragOffset = selectedCube.transform.position - mainCamera.ScreenToWorldPoint(new Vector3(mousePos.x, mousePos.y, 10f));
@@ -109,11 +130,17 @@ public class TouchManager : MonoBehaviour
     {
         if (isDragging && selectedCube != null)
         {
+            if (hasPreviousOutlineColor)
+            {
+                shaderControls.SelectionOutlineColor(cube, previousOutlineColor);
+            }
+
             shaderControls.SelectionOutline(cube, 0f);
             stickCheck.DetectStickMove(selectedCube);
             stickCheck.OnStickCollected(selectedCube);
             selectedCube.GetComponent<Rigidbody>().useGravity = true;
             isDragging = false;
+            hasPreviousOutlineColor = false;
             selectedCube = null;
         }
     }

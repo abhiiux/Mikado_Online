@@ -28,6 +28,7 @@ public class CameraRotation : MonoBehaviour
 
     void Start()
     {
+        heightOffset = Mathf.Clamp(heightOffset, 1f, 8f);
         UpdateCameraPosition();
         transform.LookAt(target);
     }
@@ -37,7 +38,7 @@ public class CameraRotation : MonoBehaviour
         if (inputDirection != Vector2.zero)
         {
             currentAngle += inputDirection.x * rotationSpeed * Time.deltaTime;
-            heightOffset += inputDirection.y * heightSpeed * Time.deltaTime;
+            heightOffset = Mathf.Clamp(heightOffset + inputDirection.y * heightSpeed * Time.deltaTime, 1f, 8f);
             UpdateCameraPosition();
         }
     }

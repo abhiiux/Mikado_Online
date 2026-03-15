@@ -80,7 +80,6 @@ public class TouchManager : MonoBehaviour
         }
         else
         {
-            Debug.Log("no");
             if (hoveredRenderer != null)
             {
                 if (!IsSelectedRenderer(hoveredRenderer))

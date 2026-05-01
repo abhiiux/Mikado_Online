@@ -151,5 +151,10 @@ public class TouchManager : MonoBehaviour
             Vector3 worldPos = mainCamera.ScreenToWorldPoint(new Vector3(mousePos.x, mousePos.y, 10f));
             selectedCube.transform.position = worldPos + dragOffset;
         }
+
+        if(Keyboard.current.bKey.wasPressedThisFrame)
+        {
+            GameEventManager.OnStickSpawnerTriggered();
+        }
     }
 }

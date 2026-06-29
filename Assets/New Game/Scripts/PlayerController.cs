@@ -30,7 +30,6 @@ public class PlayerController : MonoBehaviour
     {
         onMove.Enable();
         onMove.performed += OnMove;
-        // onMove.
     }
     void OnDisable()
     {

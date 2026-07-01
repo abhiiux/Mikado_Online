@@ -2,10 +2,15 @@ using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-[RequireComponent(typeof(Rigidbody))]
+// [RequireComponent(typeof(Rigidbody))]
 public class PlayerController : MonoBehaviour
 {
     [SerializeField] private Rigidbody rb;
+    [SerializeField] private Transform ballPos;
+    [SerializeField] private Transform alien;
+
+    [Header("Alien Offset")]
+    [SerializeField] Vector3 offset;
 
     [Header("Debug COM")]
     public Color gizmoColor = Color.red;
@@ -41,16 +46,21 @@ public class PlayerController : MonoBehaviour
         if (!rb)
             return;
 
-        DrawCenterOfMass();
+        // DrawCenterOfMass();
         DrawMovementGizmo();
     }
 
     void FixedUpdate()
     {
-        if(_moveInput.sqrMagnitude > 0.1f)
+        if(_moveInput.sqrMagnitude > 0.5f)
         {
             AddTorqueToObject(_moveInput);
         }
+    }
+    void LateUpdate()
+    {
+        if(ballPos != null)
+        alien.position = ballPos.position + offset;
     }
     private void DrawCenterOfMass()
     {
@@ -71,7 +81,7 @@ public class PlayerController : MonoBehaviour
         if (_moveInput.sqrMagnitude < 0.001f)
             return;
 
-        Vector3 worldCOM = transform.TransformPoint(rb.centerOfMass);
+        Vector3 worldCOM = rb.gameObject.transform.TransformPoint(rb.centerOfMass);
         Vector3 direction = _moveInput.normalized;
         Vector3 start = worldCOM + direction * gizmoOffset;
         float arrowLength = Mathf.Clamp(_moveInput.magnitude * 0.5f, 0.5f, 3f);
@@ -85,8 +95,6 @@ public class PlayerController : MonoBehaviour
     void OnMove(InputAction.CallbackContext context)
     {
         _moveInput = context.ReadValue<Vector3>();
-        Debug.Log($" the direction : {_moveInput}");
-        AddTorqueToObject(direction: _moveInput);
     }
 
     void AddTorqueToObject(Vector3 direction)

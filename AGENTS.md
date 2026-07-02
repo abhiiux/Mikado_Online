@@ -19,6 +19,7 @@ No CI, no tests, no lint/format scripts.
 |---|---|
 | `Scripts/PlayerController.cs` | Ball input, torque, gizmo (COM + direction arrow), alien follow |
 | `Scripts/FollowCamera.cs` | SmoothDamp follow on LateUpdate (uses `1f / positionDamping` as smooth time) |
+| `Scripts/AlienLegController.cs` | Procedural foot IK animation for alien legs (sine wave step cycle) |
 | `Scripts/Teste/Respawner.cs` | Resets ball on input; zeros `linearVelocity` + `angularVelocity` (Unity 6 API) |
 
 ## Conventions

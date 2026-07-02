@@ -2,7 +2,6 @@ using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-// [RequireComponent(typeof(Rigidbody))]
 public class PlayerController : MonoBehaviour
 {
     [SerializeField] private Rigidbody rb;
@@ -14,17 +13,19 @@ public class PlayerController : MonoBehaviour
 
     [Header("Debug COM")]
     public Color gizmoColor = Color.red;
-    public float sphereRadius = 0.1f;
+    public float sphereRadius = 0.1f;   
+    public float gizmoOffset = 0.5f;
 
     [Header(" Ball Controll")]
-    public float _ballTorque;
+    public float _movingTorque;
+    public float _idleTorque;
 
     [Header(" Ball Controll")]
     [SerializeField] private InputAction onMove;
 
+// ----------------------
     private Vector3 _moveInput;
-
-    public float gizmoOffset = 0.5f;
+    private float _ballTorque;
 
     void Reset()
     {
@@ -35,10 +36,12 @@ public class PlayerController : MonoBehaviour
     {
         onMove.Enable();
         onMove.performed += OnMove;
+        onMove.canceled += OnCancelled;
     }
     void OnDisable()
     {
         onMove.performed -= OnMove;
+        onMove.canceled -= OnCancelled;
         onMove.Disable();
     }
     void OnDrawGizmos()
@@ -52,7 +55,7 @@ public class PlayerController : MonoBehaviour
 
     void FixedUpdate()
     {
-        if(_moveInput.sqrMagnitude > 0.5f)
+        if(_moveInput.sqrMagnitude > 0.5f )
         {
             AddTorqueToObject(_moveInput);
         }
@@ -95,11 +98,19 @@ public class PlayerController : MonoBehaviour
     void OnMove(InputAction.CallbackContext context)
     {
         _moveInput = context.ReadValue<Vector3>();
+        _ballTorque = _movingTorque;
+    }
+
+    void OnCancelled(InputAction.CallbackContext context)
+    {
+        _ballTorque = _idleTorque;
     }
 
     void AddTorqueToObject(Vector3 direction)
     {
         Vector3 torque = new(direction.z, 0f, -direction.x);
+
         rb.AddTorque(torque * _ballTorque);
+        Debug.Log($" adding torque :{torque}");
     }
 }

@@ -2,65 +2,228 @@ using UnityEngine;
 
 public class AlienLegController : MonoBehaviour
 {
+    [Header("References")]
     [SerializeField] private Rigidbody ballRb;
     [SerializeField] private Transform leftFootTarget;
     [SerializeField] private Transform rightFootTarget;
     [SerializeField] private Transform hips;
 
+    [Header("Walking")]
     [SerializeField] private float stepFrequency = 2f;
-    [SerializeField] private float stepHeight = 0.3f;
     [SerializeField] private float stepLength = 0.3f;
+    [SerializeField] private float legSpacing = 0.3f;
+
+    [Header("Sphere Motion (Optional)")]
+    [SerializeField] private bool useSphereArcMotion = true;
+    [SerializeField] private float ballRadius = 0.5f;
+
+    [Header("Simple Motion")]
+    [SerializeField] private float footLiftHeight = 0.1f;
+
+    [Header("Idle")]
     [SerializeField] private float minSpeed = 0.1f;
     [SerializeField] private float idleSmoothTime = 5f;
 
-    private Vector3 _leftIdlePos;
-    private Vector3 _rightIdlePos;
+    private Vector3 _leftIdlePosition;
+    private Vector3 _rightIdlePosition;
     private float _stepProgress;
 
-    void Start()
+    private void Start()
     {
-        _leftIdlePos = leftFootTarget.localPosition;
-        _rightIdlePos = rightFootTarget.localPosition;
+        CacheIdleFootPositions();
     }
 
-    void LateUpdate()
+    private void LateUpdate()
     {
-        Vector3 velocity = ballRb.linearVelocity;
-        float speed = new Vector2(velocity.x, velocity.z).magnitude;
+        float speed = GetHorizontalSpeed();
 
         if (speed > minSpeed)
+        {
             AnimateWalking(speed);
-        else
-            ReturnToIdle();
+            return;
+        }
+
+        ReturnFeetToIdle();
     }
 
-    void AnimateWalking(float speed)
+    private void CacheIdleFootPositions()
     {
-        Vector3 moveDir = new Vector3(ballRb.linearVelocity.x, 0f, ballRb.linearVelocity.z).normalized;
+        _leftIdlePosition = leftFootTarget.localPosition;
+        _rightIdlePosition = rightFootTarget.localPosition;
+    }
+
+    private float GetHorizontalSpeed()
+    {
+        Vector3 velocity = ballRb.linearVelocity;
+        velocity.y = 0f;
+
+        return velocity.magnitude;
+    }
+
+    private void AnimateWalking(float speed)
+    {
+        AdvanceStepCycle(speed);
+
+        Vector3 moveDirection = GetLocalMovementDirection();
+
+        Vector3 leftOffset = CalculateLeftFootOffset(moveDirection);
+        Vector3 rightOffset = CalculateRightFootOffset(moveDirection);
+
+        ApplyFootOffsets(leftOffset, rightOffset);
+    }
+
+    private void AdvanceStepCycle(float speed)
+    {
         _stepProgress += Time.deltaTime * stepFrequency * speed;
-
-        float leftPhase = Mathf.Sin(_stepProgress);
-        float rightPhase = Mathf.Sin(_stepProgress + Mathf.PI);
-
-        Vector3 localMoveDir = hips.InverseTransformDirection(moveDir);
-
-        leftFootTarget.localPosition = _leftIdlePos
-            + localMoveDir * (leftPhase * stepLength)
-            + Vector3.up * Mathf.Max(0f, leftPhase * stepHeight);
-
-        rightFootTarget.localPosition = _rightIdlePos
-            + localMoveDir * (rightPhase * stepLength)
-            + Vector3.up * Mathf.Max(0f, rightPhase * stepHeight);
     }
 
-    void ReturnToIdle()
+    private Vector3 GetLocalMovementDirection()
     {
-        leftFootTarget.localPosition = Vector3.Lerp(
-            leftFootTarget.localPosition, _leftIdlePos, Time.deltaTime * idleSmoothTime);
+        Vector3 velocity = ballRb.linearVelocity;
+        velocity.y = 0f;
 
-        rightFootTarget.localPosition = Vector3.Lerp(
-            rightFootTarget.localPosition, _rightIdlePos, Time.deltaTime * idleSmoothTime);
+        return hips.InverseTransformDirection(velocity.normalized);
+    }
 
+    private Vector3 CalculateLeftFootOffset(Vector3 moveDirection)
+    {
+        return CalculateFootOffset(
+            GetLeftPhase(),
+            moveDirection,
+            -hips.forward * legSpacing
+        );
+    }
+
+    private Vector3 CalculateRightFootOffset(Vector3 moveDirection)
+    {
+        return CalculateFootOffset(
+            GetRightPhase(),
+            moveDirection,
+            hips.forward * legSpacing
+        );
+    }
+
+    private float GetLeftPhase()
+    {
+        return Mathf.Sin(_stepProgress);
+    }
+
+    private float GetRightPhase()
+    {
+        return Mathf.Sin(_stepProgress + Mathf.PI);
+    }
+
+    private Vector3 CalculateFootOffset(
+        float phase,
+        Vector3 moveDirection,
+        Vector3 lateralOffset)
+    {
+        Vector3 horizontalMovement;
+        Vector3 verticalMovement;
+
+        if (useSphereArcMotion)
+        {
+            float arcLength = CalculateArcLength(phase);
+            float angle = ConvertArcLengthToAngle(arcLength);
+
+            horizontalMovement =
+                CalculateSphereHorizontalMovement(moveDirection, angle);
+
+            verticalMovement =
+                CalculateSphereVerticalMovement(angle);
+        }
+        else
+        {
+            horizontalMovement =
+                CalculateSimpleHorizontalMovement(moveDirection, phase);
+
+            verticalMovement =
+                CalculateSimpleVerticalMovement(phase);
+        }
+
+        return horizontalMovement
+             + verticalMovement
+             + lateralOffset;
+    }
+
+    private float CalculateArcLength(float phase)
+    {
+        return phase * stepLength;
+    }
+
+    private float ConvertArcLengthToAngle(float arcLength)
+    {
+        return arcLength / ballRadius;
+    }
+
+    private Vector3 CalculateSphereHorizontalMovement(
+        Vector3 direction,
+        float angle)
+    {
+        float distance = ballRadius * Mathf.Sin(angle);
+        return direction * distance;
+    }
+
+    private Vector3 CalculateSphereVerticalMovement(float angle)
+    {
+        float height = ballRadius * (1f - Mathf.Cos(angle));
+        return -Vector3.up * height;
+    }
+
+    private Vector3 CalculateSimpleHorizontalMovement(
+        Vector3 direction,
+        float phase)
+    {
+        return direction * (phase * stepLength);
+    }
+
+    private Vector3 CalculateSimpleVerticalMovement(float phase)
+    {
+        float height = Mathf.Max(0f, phase) * footLiftHeight;
+        return Vector3.up * height;
+    }
+
+    private void ApplyFootOffsets(
+        Vector3 leftOffset,
+        Vector3 rightOffset)
+    {
+        leftFootTarget.localPosition =
+            _leftIdlePosition + leftOffset;
+
+        rightFootTarget.localPosition =
+            _rightIdlePosition + rightOffset;
+    }
+
+    private void ReturnFeetToIdle()
+    {
+        leftFootTarget.localPosition =
+            SmoothTowardsIdle(
+                leftFootTarget.localPosition,
+                _leftIdlePosition
+            );
+
+        rightFootTarget.localPosition =
+            SmoothTowardsIdle(
+                rightFootTarget.localPosition,
+                _rightIdlePosition
+            );
+
+        ResetStepCycle();
+    }
+
+    private Vector3 SmoothTowardsIdle(
+        Vector3 current,
+        Vector3 target)
+    {
+        return Vector3.Lerp(
+            current,
+            target,
+            Time.deltaTime * idleSmoothTime
+        );
+    }
+
+    private void ResetStepCycle()
+    {
         _stepProgress = 0f;
     }
 }

@@ -968,7 +968,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6784703192519875208, guid: 719456f8d5787413db560b07b32c7076, type: 3}
       propertyPath: offset.y
-      value: 1.5
+      value: 1.3
       objectReference: {fileID: 0}
     - target: {fileID: 6784703192519875208, guid: 719456f8d5787413db560b07b32c7076, type: 3}
       propertyPath: _idleTorque
@@ -1125,8 +1125,11 @@ MonoBehaviour:
   rightFootTarget: {fileID: 698445493}
   hips: {fileID: 1440311473}
   stepFrequency: 2
-  stepHeight: 0.3
   stepLength: 0.3
+  legSpacing: -0.28
+  useSphereArcMotion: 0
+  ballRadius: 0.5
+  footLiftHeight: 0.1
   minSpeed: 0.1
   idleSmoothTime: 5
 --- !u!4 &2136309329 stripped

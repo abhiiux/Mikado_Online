@@ -111,6 +111,6 @@ public class PlayerController : MonoBehaviour
         Vector3 torque = new(direction.z, 0f, -direction.x);
 
         rb.AddTorque(torque * _ballTorque);
-        Debug.Log($" adding torque :{torque}");
+        // Debug.Log($" adding torque :{torque}");
     }
 }

@@ -25,7 +25,7 @@ public class PlayerController : MonoBehaviour
 
 // ----------------------
     private Vector3 _moveInput;
-    private float _ballTorque;
+    [SerializeField] private float _ballTorque;
 
     void Reset()
     {
@@ -104,6 +104,7 @@ public class PlayerController : MonoBehaviour
     void OnCancelled(InputAction.CallbackContext context)
     {
         _ballTorque = _idleTorque;
+        _moveInput = Vector3.zero;
     }
 
     void AddTorqueToObject(Vector3 direction)

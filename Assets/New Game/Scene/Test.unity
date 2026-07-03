@@ -689,7 +689,7 @@ Transform:
   m_GameObject: {fileID: 944663018}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -0}
+  m_LocalPosition: {x: 7.052203, y: 5.181542, z: 4.0518603}
   m_LocalScale: {x: 100, y: 1, z: 100}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -896,7 +896,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1518472616717538743, guid: 719456f8d5787413db560b07b32c7076, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 6.11
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 1518472616717538743, guid: 719456f8d5787413db560b07b32c7076, type: 3}
       propertyPath: m_LocalPosition.z
@@ -976,7 +976,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6784703192519875208, guid: 719456f8d5787413db560b07b32c7076, type: 3}
       propertyPath: _movingTorque
-      value: 1.5
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 6784703192519875208, guid: 719456f8d5787413db560b07b32c7076, type: 3}
       propertyPath: leftLegTarget
@@ -1012,6 +1012,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 8513819275574130288, guid: 719456f8d5787413db560b07b32c7076, type: 3}
       insertIndex: -1
       addedObject: {fileID: 2120492177}
+    - targetCorrespondingSourceObject: {fileID: 8513819275574130288, guid: 719456f8d5787413db560b07b32c7076, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2120492178}
   m_SourcePrefab: {fileID: 100100000, guid: 719456f8d5787413db560b07b32c7076, type: 3}
 --- !u!1 &2060251394
 GameObject:
@@ -1125,13 +1128,31 @@ MonoBehaviour:
   rightFootTarget: {fileID: 698445493}
   hips: {fileID: 1440311473}
   stepFrequency: 2
-  stepLength: 0.3
-  legSpacing: -0.28
+  stepLength: 0.2
+  legSpacing: -0.2
   useSphereArcMotion: 0
   ballRadius: 0.5
-  footLiftHeight: 0.1
+  footLiftHeight: 0.2
   minSpeed: 0.1
-  idleSmoothTime: 5
+  idleSmoothTime: 1
+--- !u!114 &2120492178
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2120492173}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e16bbc8fecd7a4b71abec82175037adb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BalanceController
+  ballRb: {fileID: 99064521}
+  maxBalance: 100
+  drainRate: 20
+  regenRate: 15
+  instabilityThreshold: 2
+  angularWeight: 0.5
 --- !u!4 &2136309329 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5665353147919779004, guid: 719456f8d5787413db560b07b32c7076, type: 3}

@@ -33,6 +33,12 @@ public class AlienLegController : MonoBehaviour
         CacheIdleFootPositions();
     }
 
+    private void OnEnable()
+    {
+        _stepProgress = 0f;
+        CacheIdleFootPositions();
+    }
+
     private void LateUpdate()
     {
         float speed = GetHorizontalSpeed();

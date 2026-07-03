@@ -9,9 +9,10 @@ No CI, no tests, no lint/format scripts.
 ## Ball game (`Assets/New Game/`)
 
 - Ball controlled via `Rigidbody.AddTorque` on ball's `Rigidbody`
-- Input via `InputAction` + `performed` delegate (XZ plane)
+- Input via `InputAction` + `performed` delegate (XZ plane); `OnCancelled` clears input to prevent idle torque persistence
 - Torque mapping: `(input.z, 0, -input.x)`
-- **Known bug**: `AddTorqueToObject` called in both `OnMove` (per-frame) and `FixedUpdate` — duplicated
+- Two scenes: `Test.unity` (simple test scene), `New Game.unity` (main gameplay scene)
+- **Scene physics checks**: ensure ground has no unintended tilt; ensure ball/ground have non-zero friction to prevent perpetual rolling
 
 ## Key scripts
 
@@ -20,6 +21,7 @@ No CI, no tests, no lint/format scripts.
 | `Scripts/PlayerController.cs` | Ball input, torque, gizmo (COM + direction arrow), alien follow |
 | `Scripts/FollowCamera.cs` | SmoothDamp follow on LateUpdate (uses `1f / positionDamping` as smooth time) |
 | `Scripts/AlienLegController.cs` | Procedural foot IK animation for alien legs (sine wave step cycle) |
+| `Scripts/BalanceController.cs` | Balance meter: drains on acceleration, triggers stagger → ragdoll → recovery |
 | `Scripts/Teste/Respawner.cs` | Resets ball on input; zeros `linearVelocity` + `angularVelocity` (Unity 6 API) |
 
 ## Conventions

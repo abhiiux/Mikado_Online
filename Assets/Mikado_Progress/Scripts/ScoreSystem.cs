@@ -13,11 +13,11 @@ public class ScoreSystem : MonoBehaviour
 
     void OnEnable()
     {
-        CollisionChecker.OnCollision += Checker;
+        GameEventBus.OnCollision += Checker;
     }
     void OnDisable()
     {
-        CollisionChecker.OnCollision -= Checker;
+        GameEventBus.OnCollision -= Checker;
     }
 
     public void Checker(int score, bool value)

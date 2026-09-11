@@ -52,7 +52,7 @@ public class TouchManager : MonoBehaviour
         if (canMove)
         {
             mousePos = context.ReadValue<Vector2>();
-            CheckHoverOnLayerMask();
+            // CheckHoverOnLayerMask();
         }
     }
 
@@ -107,9 +107,16 @@ public class TouchManager : MonoBehaviour
                 return;
             }
 
-            debugUI.text = "Touch detected!";
+            debugUI.text = $"Touch detected! {hit.transform.name}";
 
             selectedCube = hit.transform.gameObject;
+
+            GameEventBus.TriggerTargetChange(hit.transform);
+            if(hit.transform.TryGetComponent<ObjectPoints>( out ObjectPoints obj))
+            {
+                obj.isTarget = true;
+            };
+
             cube = selectedCube.GetComponent<Renderer>();
             hasPreviousOutlineColor = shaderControls.TryGetOutlineColor(cube, out previousOutlineColor);
             shaderControls.SelectionOutlineColor(cube, Color.blue);
@@ -143,6 +150,7 @@ public class TouchManager : MonoBehaviour
             selectedCube = null;
         }
     }
+
 
     private void Update()
     {

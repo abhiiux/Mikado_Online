@@ -14,23 +14,34 @@ public class StickCheck : MonoBehaviour
     private bool isposTake;
     private int stickCount;
 
-    private List<Transform> children
-    {
-        get
-        {
-            List<Transform> childList = new List<Transform>();
-            foreach (Transform child in transform)
-            {
-                childList.Add(child);
-            }
-            return childList;
-        }
-    }
+    // private List<Transform> children
+    // {
+    //     get
+    //     {
+    //         List<Transform> childList = new List<Transform>();
+    //         foreach (Transform child in transform)
+    //         {
+    //             childList.Add(child);
+    //         }
+    //         return childList;
+    //     }
+    // }
+    private List<Transform> children;
     private Dictionary<Transform, Vector3> position = new Dictionary<Transform, Vector3>();
 
 
-    void Start()
+    void OnEnable()
     {
+        GameEventBus.OnTargetCollisionDetected += MovementDetection;
+    }
+    void OnDisable()
+    {
+        GameEventBus.OnTargetCollisionDetected -= MovementDetection;
+    }
+    public void Init(List<Transform> newChildren)
+    {
+        children = newChildren;
+
         StartCoroutine(StartGame());
     }
     public IEnumerator StartGame()
@@ -46,8 +57,12 @@ public class StickCheck : MonoBehaviour
         Log("Position stored "+ children.Count);
         Log("Goo!");
     }
-
-    public void DetectStickMove(GameObject selectedStick)
+    private void MovementDetection(GameObject stick)
+    {
+        DetectStickMove(stick);
+        OnStickCollected(stick);
+    }
+    private void DetectStickMove(GameObject selectedStick)
     {
         List<GameObject> sticksToUpdate = new List<GameObject>();
         foreach (var stick in position.Keys)
@@ -62,37 +77,30 @@ public class StickCheck : MonoBehaviour
             if (distanceMoved > moveThreshold)
             {
                 sticksToUpdate.Add(stick.gameObject);              //Storing new position
-                shaderControls.DamageGlow(sticksToUpdate);
+                // shaderControls.DamageGlow(sticksToUpdate);
                 Log("Movement Detected!");
                 Debug.Log($"Distance moved for {stick.name}: {distanceMoved}");
 
                 Renderer renderer = selectedStick.GetComponent<Renderer>();
-                ObjectPoints obj = selectedStick.GetComponent<ObjectPoints>();
+                // ObjectPoints obj = selectedStick.GetComponent<ObjectPoints>();
 
                 renderer.material.color = Color.black;
-                obj.isFlagged = true;
+                // obj.isFlagged = true;
 
             }
         }
-    foreach (GameObject storedsticks in sticksToUpdate)    // Updating new position
-    {
-        position[storedsticks.transform] = storedsticks.transform.position;
-    }
-    Log("No Movement");
+
+        foreach (GameObject storedsticks in sticksToUpdate)    // Updating new position
+        {
+            position[storedsticks.transform] = storedsticks.transform.position;
+        }
     }
 
-    public void OnStickCollected(GameObject stick)
+    private void OnStickCollected(GameObject stick)
     {
         position.Remove(stick.gameObject.transform);
     }
     
-
-    // private void HitBlink(Renderer renderer)
-    // {
-    //     renderer.material.SetFloat("_colorIntensity", 1f);
-    //     renderer.material.SetFloat("_colorIntensity", 0f);
-    //     // renderer.
-    // }
     public bool GetStatus()
     {
         return isposTake;

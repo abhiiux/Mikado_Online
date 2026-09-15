@@ -1,4 +1,3 @@
-using System.Xml;
 using TMPro;
 using Unity.Mathematics;
 using UnityEngine;
@@ -118,12 +117,12 @@ public class TouchManager : MonoBehaviour
             };
 
             cube = selectedCube.GetComponent<Renderer>();
-            hasPreviousOutlineColor = shaderControls.TryGetOutlineColor(cube, out previousOutlineColor);
+            // hasPreviousOutlineColor = shaderControls.TryGetOutlineColor(cube, out previousOutlineColor);
             shaderControls.SelectionOutlineColor(cube, Color.blue);
-            shaderControls.SelectionOutline(cube, 1f);
+            // shaderControls.SelectionOutline(cube, 1f);
             // cube.material.SetFloat("_OutlineWidth", 1f);
-            dragOffset = selectedCube.transform.position - mainCamera.ScreenToWorldPoint(new Vector3(mousePos.x, mousePos.y, 10f));
-            isDragging = true;
+            // dragOffset = selectedCube.transform.position - mainCamera.ScreenToWorldPoint(new Vector3(mousePos.x, mousePos.y, 10f));
+            // isDragging = true;
             selectedCube.GetComponent<Rigidbody>().useGravity = false;
         }
         else
@@ -141,11 +140,10 @@ public class TouchManager : MonoBehaviour
                 shaderControls.SelectionOutlineColor(cube, previousOutlineColor);
             }
 
-            shaderControls.SelectionOutline(cube, 0f);
-            stickCheck.DetectStickMove(selectedCube);
-            stickCheck.OnStickCollected(selectedCube);
-            selectedCube.GetComponent<Rigidbody>().useGravity = true;
-            isDragging = false;
+            // shaderControls.SelectionOutline(cube, 0f);
+            // stickCheck.DetectStickMove(selectedCube);
+            // stickCheck.OnStickCollected(selectedCube);
+            // isDragging = false;
             hasPreviousOutlineColor = false;
             selectedCube = null;
         }

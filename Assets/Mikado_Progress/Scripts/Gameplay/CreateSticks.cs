@@ -4,60 +4,98 @@ using UnityEngine;
 namespace Mikado.Gameplay
 {
     public class CreateSticks : MonoBehaviour
-{
-    [SerializeField] private int noOfSticks; 
-    [SerializeField] private GameObject prefabStick; 
-
-    [Header("Circle Settings")]
-    [SerializeField] float radius = 1f; 
-    [SerializeField] bool sortOnStart = true;
-    [SerializeField] bool randomRotation = true;
-    [SerializeField] float minRotation = 0f;     
-    [SerializeField] float maxRotation = 100f;   
-
-    private Transform parentObject;
-    private List<Transform> childrens = new List<Transform>();
-    private StickCheck stickCheck;
-
-    void Start()
     {
-        parentObject = GetComponent<Transform>();
-        stickCheck = GetComponent<StickCheck>();
+        [SerializeField] private int noOfSticks; 
+        [SerializeField] private GameObject prefabStick; 
 
-        CreateSticksOnCall();
-    }
+        [Header("Circle Settings")]
+        [SerializeField] float radius = 1f; 
+        [SerializeField] float radiusVariance = 1f; 
+        [SerializeField] bool sortOnStart = true;
+        [SerializeField] bool randomRotation = true;
+        [SerializeField] float minRotation = 0f;     
+        [SerializeField] float maxRotation = 100f;   
 
-    private void CreateSticksOnCall()
-    {
-        for (int i = 0; i < noOfSticks; i++)
+        [Header("Per Stick Settings")]
+        [SerializeField] float heightVariance = 1f; 
+        [SerializeField] float tiltVariance = 1f; 
+        
+        private Transform parentObject;
+        private List<Transform> childrens = new List<Transform>();
+        private StickCheck stickCheck;
+
+        void Start()
         {
-            GameObject t =  Instantiate( prefabStick, parentObject );
-            childrens.Add( t.transform );
+            parentObject = GetComponent<Transform>();
+            stickCheck = GetComponent<StickCheck>();
+
+            CreateSticksOnCall();
         }
 
-        ArrangeInCircle();
-
-        stickCheck.Init( childrens );
-    }
-
-    public void ArrangeInCircle()
-    {
-        var sortedChildren = childrens;
-
-        float angleStep = 360f / sortedChildren.Count;
-        float startAngle = randomRotation ? Random.Range(minRotation, maxRotation) : 0f;
-
-        for (int i = 0; i < sortedChildren.Count; i++)
+        private void CreateSticksOnCall()
         {
-            float angle = (i * angleStep + startAngle) * Mathf.Deg2Rad;
-            Vector3 newPosition = new Vector3(
-                Mathf.Cos(angle) * radius,
-                sortedChildren[i].localPosition.y, 
-                Mathf.Sin(angle) * radius
-            );
+            for (int i = 0; i < noOfSticks; i++)
+            {
+                GameObject t =  Instantiate( prefabStick, parentObject );
+                childrens.Add( t.transform );
+            }
 
-            sortedChildren[i].position = transform.position + newPosition;
+            ArrangeInCircle();
+
+            stickCheck.Init( childrens );
         }
-    }
+
+        // public void ArrangeInCircle()
+        // {
+        //     var sortedChildren = childrens;
+
+        //     float angleStep = 360f / sortedChildren.Count;
+        //     float startAngle = randomRotation ? Random.Range(minRotation, maxRotation) : 0f;
+        //     Debug.Log($" random angle is :{startAngle}");
+
+        //     for (int i = 0; i < sortedChildren.Count; i++)
+        //     {
+        //         float angle = (i * angleStep + startAngle) * Mathf.Deg2Rad;
+        //         Vector3 newPosition = new Vector3(
+        //             Mathf.Cos(angle) * radius,
+        //             sortedChildren[i].localPosition.y, 
+        //             Mathf.Sin(angle) * radius
+        //         );
+
+        //         sortedChildren[i].position = transform.position + newPosition;
+        //     }
+        // }
+        public void ArrangeInCircle()
+        {
+            var sortedChildren = childrens;
+
+            float angleStep = 360f / sortedChildren.Count;
+            float startAngle = randomRotation ? Random.Range(minRotation, maxRotation) : 0f;
+
+            for (int i = 0; i < sortedChildren.Count; i++)
+            {
+                float angle = (i * angleStep + startAngle) * Mathf.Deg2Rad;
+
+                // small per-stick jitter so they don't land in a perfect ring
+                float radiusJitter = Random.Range(-radiusVariance, radiusVariance);
+                float heightJitter = Random.Range(0f, heightVariance);
+
+                Vector3 newPosition = new Vector3(
+                    Mathf.Cos(angle) * (radius + radiusJitter),
+                    sortedChildren[i].localPosition.y + heightJitter,
+                    Mathf.Sin(angle) * (radius + radiusJitter)
+                );
+
+                sortedChildren[i].position = transform.TransformPoint(newPosition);
+
+                // each stick gets its own random facing before falling
+                if (randomRotation)
+                {
+                    float stickYaw = Random.Range(0f, 360f);
+                    float stickTilt = Random.Range(-tiltVariance, tiltVariance); // slight lean, optional
+                    sortedChildren[i].rotation = Quaternion.Euler(stickTilt, stickYaw, stickTilt);
+                }
+            }
+        }
     }
 }

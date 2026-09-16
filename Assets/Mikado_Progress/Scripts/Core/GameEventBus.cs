@@ -9,7 +9,6 @@ namespace Mikado.Core
     /// </summary>
     public static class GameEventBus
     {
-
         public static event Action<Transform> OnTargetChange;
         public static void TriggerTargetChange(Transform transform) => OnTargetChange?.Invoke(transform);
         public static event Action<GameObject> OnTargetCollisionDetected;
@@ -17,10 +16,9 @@ namespace Mikado.Core
 
         public static event Action<int, bool> OnCollision;
         public static void TriggerCollision(int i, bool state) => OnCollision?.Invoke(i, state);
-        // private static void ResetCachedState()
-        // {
+        public static event Action<Renderer, bool> OnStickSelected;
+        public static void TriggerSelection(Renderer renderer,bool state) => OnStickSelected?.Invoke(renderer, state);
 
-        // }
 
         // [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
         // public static void ResetAllListeners()

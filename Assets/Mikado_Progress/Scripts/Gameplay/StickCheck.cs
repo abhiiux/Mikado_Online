@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using Mikado.Core;
-// using Mikado.Presentation;
 using TMPro;
 using UnityEngine;
 
@@ -9,38 +8,28 @@ namespace Mikado.Gameplay
 {
     public class StickCheck : MonoBehaviour
     {
-        // [SerializeField] ShaderControls shaderControls;
     [SerializeField] TMP_Text noOfSticks;
     [SerializeField] bool isLog;
     [SerializeField] float gamestartTime;
     [SerializeField] TMP_Text text;
     [SerializeField] float moveThreshold;
+
     private bool isposTake;
     private int stickCount;
-
-    // private List<Transform> children
-    // {
-    //     get
-    //     {
-    //         List<Transform> childList = new List<Transform>();
-    //         foreach (Transform child in transform)
-    //         {
-    //             childList.Add(child);
-    //         }
-    //         return childList;
-    //     }
-    // }
     private List<Transform> children;
+    private List<ObjectPoints> childrenScripts = new List<ObjectPoints>();
     private Dictionary<Transform, Vector3> position = new Dictionary<Transform, Vector3>();
 
 
     void OnEnable()
     {
         GameEventBus.OnTargetCollisionDetected += MovementDetection;
+        GameEventBus.OnTargetChange            += ChangeObjectState;
     }
     void OnDisable()
     {
         GameEventBus.OnTargetCollisionDetected -= MovementDetection;
+        GameEventBus.OnTargetChange            -= ChangeObjectState;
     }
     public void Init(List<Transform> newChildren)
     {
@@ -58,8 +47,39 @@ namespace Mikado.Gameplay
         }  
         isposTake = true;
         noOfSticks.text = children.Count.ToString();
+
+        InitScripts();
         Log("Position stored "+ children.Count);
         Log("Goo!");
+    }
+    private void InitScripts()
+    {
+        foreach (var item in children)
+        {
+            childrenScripts.Add( item.GetComponent<ObjectPoints>() );
+        }
+
+        foreach (var item in childrenScripts)
+        {
+            item.Init();
+        }
+    }
+    private void ChangeObjectState(Transform selectedTransform)
+    {
+        if(selectedTransform == null) return;
+
+        int index = children.IndexOf(selectedTransform);
+        Debug.Log($" index's name is {childrenScripts[index].nameStick}");
+        if (index < 0)
+        {
+            Debug.LogWarning($"[StickCheck] Selected transform not found in children.");
+            return;
+        }
+
+        for (int i = 0; i < childrenScripts.Count; i++)
+        {
+            childrenScripts[i].SetSelection(i == index);
+        }
     }
     private void MovementDetection(GameObject stick)
     {
@@ -81,16 +101,8 @@ namespace Mikado.Gameplay
             if (distanceMoved > moveThreshold)
             {
                 sticksToUpdate.Add(stick.gameObject);              //Storing new position
-                // shaderControls.DamageGlow(sticksToUpdate);
                 Log("Movement Detected!");
                 Debug.Log($"Distance moved for {stick.name}: {distanceMoved}");
-
-                Renderer renderer = selectedStick.GetComponent<Renderer>();
-                // ObjectPoints obj = selectedStick.GetComponent<ObjectPoints>();
-
-                renderer.material.color = Color.black;
-                // obj.isFlagged = true;
-
             }
         }
 

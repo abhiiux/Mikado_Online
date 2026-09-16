@@ -1,0 +1,25 @@
+using UnityEngine;
+
+namespace Mikado.Core
+{
+    public class ObjectPoints : MonoBehaviour
+    {
+        [SerializeField] private int _points;
+        [SerializeField] private string nameStick;
+        [HideInInspector] public bool isFlagged = false;
+        [HideInInspector] public bool isTarget = false;
+
+        public int Points
+        {
+            get
+            {
+                return _points;
+            }
+            set
+            {
+                _points = value;
+            }
+        }
+
+    }
+}

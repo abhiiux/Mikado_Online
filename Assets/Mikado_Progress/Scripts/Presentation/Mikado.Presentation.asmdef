@@ -1,0 +1,21 @@
+{
+    "name": "Mikado.Presentation",
+    "rootNamespace": "",
+    "references": [
+        "GUID:c5cf06f4467cb428a9790dcb0d540b2e",
+        "GUID:d30c7d404d381466c8e0a3f89e171bff",
+        "GUID:6055be8ebefd69e48b49212b09b47b2f",
+        "GUID:d8b63aba1907145bea998dd612889d6b",
+        "GUID:c4ef604dac0c543b5a84ae3ca8dc4d9e",
+        "GUID:75469ad4d38634e559750d17036d5f7c"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

@@ -46,10 +46,12 @@ namespace Mikado.Core
             if(value)
             {
                 UpdateState(sticksState.Selected);
+                Debug.Log($" object set to Selected state ");
             }
             else
             {
                 UpdateState(sticksState.Active);
+                Debug.Log($" object set to Un-Select state ");
             }
         }
         private void UpdateState(sticksState newState)
@@ -83,6 +85,10 @@ namespace Mikado.Core
         private void ToggleSelectionVisual(bool state)
         {
             GameEventBus.TriggerSelection( ownRenderer, state );
+        }
+        public void ToggleRedVisual()
+        {
+            GameEventBus.TriggerMovementDetection( ownRenderer );
         }
 
     }

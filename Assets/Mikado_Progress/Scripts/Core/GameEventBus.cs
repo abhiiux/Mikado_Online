@@ -12,12 +12,14 @@ namespace Mikado.Core
         public static event Action<Transform> OnTargetChange;
         public static void TriggerTargetChange(Transform transform) => OnTargetChange?.Invoke(transform);
         public static event Action<GameObject> OnTargetCollisionDetected;
-        public static void TriggerMovementDetected(GameObject Obj) => OnTargetCollisionDetected?.Invoke(Obj);
+        public static void TriggerCollisionDetected(GameObject Obj) => OnTargetCollisionDetected?.Invoke(Obj);
 
         public static event Action<int, bool> OnCollision;
         public static void TriggerCollision(int i, bool state) => OnCollision?.Invoke(i, state);
         public static event Action<Renderer, bool> OnStickSelected;
         public static void TriggerSelection(Renderer renderer,bool state) => OnStickSelected?.Invoke(renderer, state);
+        public static event Action<Renderer> OnStickMovementDetected;
+        public static void TriggerMovementDetection(Renderer renderer) => OnStickMovementDetected?.Invoke(renderer);
 
 
         // [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]

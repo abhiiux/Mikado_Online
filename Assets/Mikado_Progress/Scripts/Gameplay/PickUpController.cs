@@ -27,8 +27,9 @@ namespace Mikado.Gameplay
 
         private void HandleTargetChange(Transform newTarget)
         {
-            if(newTarget == null) return;
-
+            // null means "nothing selected" (deselect, cancelled pickup, collected, etc.) —
+            // clear the cache too, or HandlePickUp keeps applying force to a stick that's
+            // no longer actually selected.
             pickUpObject = newTarget;
         }
         private void HandlePickUp(InputAction.CallbackContext context)

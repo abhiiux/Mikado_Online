@@ -19,6 +19,7 @@ namespace Mikado.Gameplay
     private List<Transform> children;
     private List<ObjectPoints> childrenScripts = new List<ObjectPoints>();
     private Dictionary<Transform, Vector3> position = new Dictionary<Transform, Vector3>();
+    private int _lastSelectedIndex = -1;
 
 
     void OnEnable()
@@ -34,6 +35,9 @@ namespace Mikado.Gameplay
     public void Init(List<Transform> newChildren)
     {
         children = newChildren;
+        childrenScripts.Clear();
+        position.Clear();
+        _lastSelectedIndex = -1;
 
         StartCoroutine(StartGame());
     }
@@ -66,20 +70,33 @@ namespace Mikado.Gameplay
     }
     private void ChangeObjectState(Transform selectedTransform)
     {
-        if(selectedTransform == null) return;
+        if(selectedTransform == null) return; // D1: intentionally ignore - TakeThis disables stick
+
+        if (children == null || childrenScripts == null || childrenScripts.Count == 0) return;
 
         int index = children.IndexOf(selectedTransform);
-        Debug.Log($" index's name is {childrenScripts[index].nameStick}");
         if (index < 0)
         {
             Debug.LogWarning($"[StickCheck] Selected transform not found in children.");
             return;
         }
+        if (index >= childrenScripts.Count) return; // parallel-array desync guard
 
-        for (int i = 0; i < childrenScripts.Count; i++)
+        if (index == _lastSelectedIndex) return; // same stick spam -> no-op (UpdateState is idempotent)
+
+        if (_lastSelectedIndex >= 0 && _lastSelectedIndex < childrenScripts.Count)
         {
-            childrenScripts[i].SetSelection(i == index);
+            var prev = childrenScripts[_lastSelectedIndex];
+            if (prev != null) prev.SetSelection(false);
         }
+
+        var next = childrenScripts[index];
+        if (next != null)
+        {
+            next.SetSelection(true);
+            // Debug.Log($" index's name is {next.nameStick}");
+        }
+        _lastSelectedIndex = index;
     }
     private void MovementDetection(GameObject stick)
     {
@@ -114,6 +131,12 @@ namespace Mikado.Gameplay
 
     private void OnStickCollected(GameObject stick)
     {
+        // D2: invalidate cached index if collected stick was selected (saves deselecting disabled object)
+        if (children != null && _lastSelectedIndex >= 0 && _lastSelectedIndex < children.Count)
+        {
+            if (children[_lastSelectedIndex] == stick.transform)
+                _lastSelectedIndex = -1;
+        }
         position.Remove(stick.gameObject.transform);
     }
     

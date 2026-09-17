@@ -5,8 +5,11 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 0
-    path: Assets/Scenes/SampleScene.unity
-    guid: 99c9720ab356a0642a771bea13969a05
+  - enabled: 1
+    path: Assets/Mikado_Progress/Scenes/MainMenu.unity
+    guid: 87fd61ee8b5124ff1a90f0dea96abbc0
+  - enabled: 1
+    path: Assets/Mikado_Progress/Scenes/Gameplay Scene.unity
+    guid: ef66e8bd3b4d643ac8b813ed123e2ddd
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}

@@ -9,11 +9,12 @@ namespace Mikado.Core
     /// </summary>
     public static class GameEventBus
     {
+        public static event Action OnLevelWon;
+        public static void TriggerLevelWon() => OnLevelWon?.Invoke();
         public static event Action<Transform> OnTargetChange;
         public static void TriggerTargetChange(Transform transform) => OnTargetChange?.Invoke(transform);
         public static event Action<GameObject> OnTargetCollisionDetected;
         public static void TriggerCollisionDetected(GameObject Obj) => OnTargetCollisionDetected?.Invoke(Obj);
-
         public static event Action<int, bool> OnCollision;
         public static void TriggerCollision(int i, bool state) => OnCollision?.Invoke(i, state);
         public static event Action<Renderer, bool> OnStickSelected;

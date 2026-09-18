@@ -11,12 +11,12 @@ namespace Mikado.Presentation
         [SerializeField] private Button upButton;
         [SerializeField] private Button downButton;
         [SerializeField] private TMP_Text counterTextField;
-        [SerializeField] private int valueAdded;
-        [SerializeField] private StickCounterValue count;
+        [SerializeField] private StickCounterValue counterData;
 
+        private int valueAdded;
         private int stickCounter;
-        private readonly int minStickCounter = 5;
-        private readonly int maxStickCounter = 50;
+        private int minStickCounter;
+        private int maxStickCounter;
 
         void OnEnable()
         {
@@ -32,7 +32,11 @@ namespace Mikado.Presentation
 
         void Start()
         {
-            stickCounter = minStickCounter;
+            minStickCounter = counterData.MinStickCount;
+            maxStickCounter = counterData.MaxStickCount;
+            valueAdded = counterData.IncrementalValue;
+
+            stickCounter =  counterData.CurrentStickCount == 0 ? minStickCounter : counterData.MaxStickCount;
             UpdateUI();
         }
         
@@ -45,7 +49,7 @@ namespace Mikado.Presentation
         
         private void AddValueToSo()
         {
-            count.SetStickCount( stickCounter ); 
+            counterData.SetStickCount( stickCounter ); 
         }
         private void AddCounter()
         {
@@ -73,20 +77,17 @@ namespace Mikado.Presentation
         }
         private void CheckCounter()
         {
-            switch (stickCounter)
+            int minStickCount = counterData.GetMinStickCount();
+            int maxStickCount = counterData.GetMaxStickCount();
+
+            if (stickCounter == minStickCount)
+                UpdateButtonState(upButton, false);
+            else if (stickCounter == maxStickCount)
+                UpdateButtonState(downButton, false);
+            else
             {
-                case 5:
-                    UpdateButtonState(upButton, false);
-                break;
-
-                case 50:
-                    UpdateButtonState(downButton, false);
-                break;
-
-                default:
-                    UpdateButtonState(upButton, true);
-                    UpdateButtonState(downButton, true);
-                break;
+                UpdateButtonState(upButton, true);
+                UpdateButtonState(downButton, true);
             }
         }
     }

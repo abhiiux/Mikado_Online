@@ -8,7 +8,6 @@ namespace Mikado.Gameplay
 {
     public class StickCheck : MonoBehaviour
     {
-    [SerializeField] TMP_Text noOfSticks;
     [SerializeField] bool isLog;
     [SerializeField] float gamestartTime;
     [SerializeField] TMP_Text text;
@@ -82,7 +81,6 @@ namespace Mikado.Gameplay
             position.Add(item, item.transform.position);
         }  
         isposTake = true;
-        noOfSticks.text = children.Count.ToString();
 
         InitScripts();
         Log("Position stored "+ children.Count);

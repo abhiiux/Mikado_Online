@@ -9,10 +9,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3ad2cc82a080a43ffb787d52e8abc4f3, type: 3}
-  m_Name: StickCounterValueSO
-  m_EditorClassIdentifier: Mikado.Presentation::StickCounterValue
-  IncrementalValue: 3
-  CurrentStickCount: 0
-  MinStickCount: 5
-  MaxStickCount: 20
+  m_Script: {fileID: 11500000, guid: 7be14e749051c4579a110ee5e86c98c1, type: 3}
+  m_Name: WinPanelDetailsSO
+  m_EditorClassIdentifier: Core::Mikado.Data.WinPanelDetailsSO
+  FailedPickUp: 0
+  StickSelected: 0
+  TimeSpend: 0

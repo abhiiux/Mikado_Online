@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Mikado.Core;
 using UnityEngine;
 
 namespace Mikado.Gameplay
@@ -6,6 +7,7 @@ namespace Mikado.Gameplay
     public class CreateSticks : MonoBehaviour
     {
         [SerializeField] private int noOfSticks; 
+        [SerializeField] private StickCounterValue stickCounterValue;
         [SerializeField] private GameObject prefabStick; 
 
         [Header("Circle Settings")]
@@ -28,7 +30,8 @@ namespace Mikado.Gameplay
         {
             parentObject = GetComponent<Transform>();
             stickCheck = GetComponent<StickCheck>();
-
+            
+            noOfSticks = stickCounterValue.GetStickCount();
             CreateSticksOnCall();
         }
 
@@ -45,26 +48,6 @@ namespace Mikado.Gameplay
             stickCheck.Init( childrens );
         }
 
-        // public void ArrangeInCircle()
-        // {
-        //     var sortedChildren = childrens;
-
-        //     float angleStep = 360f / sortedChildren.Count;
-        //     float startAngle = randomRotation ? Random.Range(minRotation, maxRotation) : 0f;
-        //     Debug.Log($" random angle is :{startAngle}");
-
-        //     for (int i = 0; i < sortedChildren.Count; i++)
-        //     {
-        //         float angle = (i * angleStep + startAngle) * Mathf.Deg2Rad;
-        //         Vector3 newPosition = new Vector3(
-        //             Mathf.Cos(angle) * radius,
-        //             sortedChildren[i].localPosition.y, 
-        //             Mathf.Sin(angle) * radius
-        //         );
-
-        //         sortedChildren[i].position = transform.position + newPosition;
-        //     }
-        // }
         public void ArrangeInCircle()
         {
             var sortedChildren = childrens;

@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using Mikado.Core;
 using UnityEngine;
 
@@ -7,54 +6,60 @@ namespace Mikado.Presentation
 {
     public class ShaderControls : MonoBehaviour
     {
-        private string outLineTogglePropery = "_OutlineWidth";
+        private static readonly int OutLineColorProperty =
+            Shader.PropertyToID("_OutlineColor");
+
+        private static readonly int OutlineToggleProperty =
+            Shader.PropertyToID("_OutlineWidth");
+
         private MaterialPropertyBlock propertyBlock;
 
-        void OnEnable()
+        private void OnEnable()
         {
-            propertyBlock = new MaterialPropertyBlock();     
+            propertyBlock = new MaterialPropertyBlock();
 
-            GameEventBus.OnStickSelected +=  ToggleSelectionState;
+            GameEventBus.OnStickSelected += ToggleSelectionState;
+            GameEventBus.OnStickMovementDetected += DamageGlow;
         }
-        void OnDisable()
+
+        private void OnDisable()
         {
-            GameEventBus.OnStickSelected -=  ToggleSelectionState;
+            GameEventBus.OnStickSelected -= ToggleSelectionState;
+            GameEventBus.OnStickMovementDetected -= DamageGlow;
         }
 
         public void ToggleSelectionState(Renderer stick, bool state)
         {
             stick.GetPropertyBlock(propertyBlock);
 
-            float value = propertyBlock.GetFloat(outLineTogglePropery);
-            propertyBlock.SetFloat(outLineTogglePropery, state? 1f : 0f);
+            propertyBlock.SetFloat(
+                OutlineToggleProperty,
+                state ? 1f : 0f
+            );
 
             stick.SetPropertyBlock(propertyBlock);
         }
-        
 
-        public void DamageGlow(List<GameObject> value)
+        public void DamageGlow(Renderer stick)
         {
-            StartCoroutine(StartGlow(value));
+            StartCoroutine(StartGlow(stick));
         }
-        
-        private IEnumerator StartGlow(List<GameObject> sticks)
+
+        private IEnumerator StartGlow(Renderer stick)
         {
-            foreach (GameObject item in sticks)
-            {
-                Renderer renderer = item.GetComponent<Renderer>();
-                renderer.material.SetFloat("_damageColor", 1f);
-                renderer.material.SetFloat("_blinkRate", 15f);
-            }
+            stick.GetPropertyBlock(propertyBlock);
+
+            // Damage state
+            propertyBlock.SetColor(OutLineColorProperty, Color.red);
+            propertyBlock.SetFloat(OutlineToggleProperty, 1f);
+            stick.SetPropertyBlock(propertyBlock);
 
             yield return new WaitForSeconds(2f);
 
-            foreach (GameObject item in sticks)
-            {
-                Renderer renderer = item.GetComponent<Renderer>();
-                renderer.material.SetFloat("_damageColor", 0f);
-                renderer.material.SetFloat("_blinkRate", 0f);
-            }
+            // Normal state
+            propertyBlock.SetColor(OutLineColorProperty, Color.white);
+            propertyBlock.SetFloat(OutlineToggleProperty, 0f);
+            stick.SetPropertyBlock(propertyBlock);
         }
-
     }
 }

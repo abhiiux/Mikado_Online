@@ -13,7 +13,7 @@ namespace Mikado.Gameplay
             if(obj.isTarget)
             {
                 GameEventBus.TriggerTargetChange(null);
-                GameEventBus.TriggerMovementDetected(other.gameObject);
+                GameEventBus.TriggerCollisionDetected(other.gameObject);
                 obj.isFlagged = true;
             }
         }

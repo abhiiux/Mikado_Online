@@ -4,7 +4,7 @@ namespace Mikado.Core
 {
     public class ObjectPoints : MonoBehaviour
     {
-        public enum sticksState
+        public enum SticksState
         {
             Active,
             Selected,
@@ -16,7 +16,7 @@ namespace Mikado.Core
         [HideInInspector] public bool isFlagged = false;
         [HideInInspector] public bool isTarget = false;
 
-        public sticksState currentState = sticksState.Active;//needs update
+        public SticksState currentState = SticksState.Active;//needs update
         private Rigidbody rb;
         private Renderer ownRenderer;
 
@@ -45,14 +45,14 @@ namespace Mikado.Core
         {
             if(value)
             {
-                UpdateState(sticksState.Selected);
+                UpdateState(SticksState.Selected);
             }
             else
             {
-                UpdateState(sticksState.Active);
+                UpdateState(SticksState.Active);
             }
         }
-        private void UpdateState(sticksState newState)
+        private void UpdateState(SticksState newState)
         {
             if(newState == currentState) return;
 
@@ -60,22 +60,23 @@ namespace Mikado.Core
 
             switch (newState)
             {
-                case sticksState.Active:
-                    rb.useGravity = true;
+                case SticksState.Active:
+                    // rb.useGravity = true; 
                     isTarget = false;
 
                     ToggleSelectionVisual( false );
                 break;                
 
-                case sticksState.Selected:
-                    rb.useGravity = false;
+                case SticksState.Selected:
+                    // rb.useGravity = false;
                     isTarget = true;
 
                     ToggleSelectionVisual( true );
                 break;         
 
-                case sticksState.Disable:
-                    //
+                case SticksState.Disable:
+                    if(gameObject.activeSelf)
+                     gameObject.SetActive(false);
                 break;                
             }
         }
@@ -83,6 +84,10 @@ namespace Mikado.Core
         private void ToggleSelectionVisual(bool state)
         {
             GameEventBus.TriggerSelection( ownRenderer, state );
+        }
+        public void ToggleRedVisual()
+        {
+            GameEventBus.TriggerMovementDetection( ownRenderer );
         }
 
     }

@@ -22,9 +22,9 @@ Physics-based Mikado adaptation — sticks settle, you select one, lift it witho
 | Action | Input |
 | :--- | :--- |
 | Select stick | Click / tap |
-| Orbit + height | WASD |
-| Zoom | Q / E |
-| Pick up | Space |
+| Orbit + height | WASD / touch drag|
+| Zoom | Q / E / Slider|
+| Pick up | Space / Button|
 
 ## Stack
 

@@ -41,12 +41,19 @@ namespace Mikado.UI
         void Awake()
         {
             winPanel.alpha = 0;
+            // Invisible must also mean non-blocking: CanvasGroup.blocksRaycasts
+            // is independent of alpha, so without this the hidden Win panel
+            // (rendered above the corner menu) swallows every click.
+            winPanel.blocksRaycasts = false;
+            winPanel.interactable = false;
         }
         private void HandleWinPanelOpen()
         {
             UpdatePanelDetails();
 
             winPanel.alpha = 1;          //Shows Panel
+            winPanel.blocksRaycasts = true;
+            winPanel.interactable = true;
 
             pauseButton.Invoke();
         }

@@ -9,9 +9,7 @@ namespace Mikado.Presentation
 {
     public class TouchManager : MonoBehaviour
     {
-        [SerializeField] ShaderControls shaderControls;
     [SerializeField] StickCheck stickCheck;
-    [SerializeField] TMP_Text debugUI;
     private Renderer cube;
     private Renderer hoveredRenderer;
     private LayerMask layerMask;
@@ -82,6 +80,9 @@ namespace Mikado.Presentation
 
     private void OnClick(InputAction.CallbackContext context)
     {
+        bool canClick = stickCheck.GetStatus();
+        if(!canClick) return;
+        
         Ray ray = mainCamera.ScreenPointToRay(mousePos);
         if (Physics.Raycast(ray, out RaycastHit hit, math.INFINITY, layerMask))
         {
@@ -91,18 +92,7 @@ namespace Mikado.Presentation
                 return;
             }
 
-            debugUI.text = $"Touch detected! {hit.transform.name}";
-
             GameEventBus.TriggerTargetChange(hit.transform);
-            // if(hit.transform.TryGetComponent<ObjectPoints>( out ObjectPoints obj))
-            // {
-            //     obj.UpdateState( ObjectPoints.sticksState.Selected );
-            // };
-
-        }
-        else
-        {
-            debugUI.text = " ";
         }
     }
 

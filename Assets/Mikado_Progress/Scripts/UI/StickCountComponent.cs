@@ -36,7 +36,7 @@ namespace Mikado.Presentation
             maxStickCounter = counterData.MaxStickCount;
             valueAdded = counterData.IncrementalValue;
 
-            stickCounter =  counterData.CurrentStickCount == 0 ? minStickCounter : counterData.MaxStickCount;
+            stickCounter =  counterData.MaxStickCount;
             UpdateUI();
         }
         

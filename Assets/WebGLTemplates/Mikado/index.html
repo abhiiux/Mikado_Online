@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>Unity Web Player | {{{ PRODUCT_NAME }}}</title>
+
+#if SHOW_DIAGNOSTICS
+    <link rel="stylesheet" href="<<<TemplateData/diagnostics.css>>>">
+    <script src="<<<TemplateData/diagnostics.js>>>"></script>
+#endif
+
+    <style>
+      #rotate-message {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: #000;
+        color: white;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        z-index: 9999;
+        font-family: sans-serif;
+      }
+
+      @media (orientation: portrait) {
+        #rotate-message {
+          display: flex;
+        }
+
+        #unity-canvas {
+          display: none;
+        }
+      }
+    </style>
+  </head>
+
+  <body style="text-align: center; padding: 0; border: 0; margin: 0;">
+
+    <div id="rotate-message">
+      <div>
+        <h2>↻ Rotate your device</h2>
+        <p>This game is landscape only.</p>
+      </div>
+    </div>
+
+    <canvas id="unity-canvas"
+            width={{{ WIDTH }}}
+            height={{{ HEIGHT }}}
+            tabindex="-1"
+            style="width: {{{ WIDTH }}}px; height: {{{ HEIGHT }}}px; background: {{{ BACKGROUND_FILENAME ? 'url(\'Build/' + BACKGROUND_FILENAME.replace(/'/g, '%27') + '\') center / cover' : BACKGROUND_COLOR }}}">
+    </canvas>
+
+#if SHOW_DIAGNOSTICS
+    <div id="unity-footer">
+        <img id="diagnostics-icon" src="TemplateData/webmemd-icon.png">
+    </div>
+#endif
+
+    <script src="Build/{{{ LOADER_FILENAME }}}"></script>
+
+    <script>
+      if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
+
+        var meta = document.createElement('meta');
+        meta.name = 'viewport';
+        meta.content = 'width=device-width, height=device-height, initial-scale=1.0, user-scalable=no, shrink-to-fit=yes';
+        document.getElementsByTagName('head')[0].appendChild(meta);
+
+        var canvas = document.querySelector("#unity-canvas");
+        canvas.style.width = "100%";
+        canvas.style.height = "100%";
+        canvas.style.position = "fixed";
+
+        document.body.style.textAlign = "left";
+
+#if SHOW_DIAGNOSTICS
+        let diagnostics_icon = document.getElementById("diagnostics-icon");
+        diagnostics_icon.style.position = "fixed";
+        diagnostics_icon.style.bottom = "10px";
+        diagnostics_icon.style.right = "0px";
+        canvas.after(diagnostics_icon);
+#endif
+      }
+
+      createUnityInstance(document.querySelector("#unity-canvas"), {
+        arguments: [],
+        dataUrl: "Build/{{{ DATA_FILENAME }}}",
+        frameworkUrl: "Build/{{{ FRAMEWORK_FILENAME }}}",
+
+#if USE_WASM
+        codeUrl: "Build/{{{ CODE_FILENAME }}}",
+#endif
+
+#if SYMBOLS_FILENAME
+        symbolsUrl: "Build/{{{ SYMBOLS_FILENAME }}}",
+#endif
+
+        streamingAssetsUrl: "StreamingAssets",
+        companyName: {{{ JSON.stringify(COMPANY_NAME) }}},
+        productName: {{{ JSON.stringify(PRODUCT_NAME) }}},
+        productVersion: {{{ JSON.stringify(PRODUCT_VERSION) }}},
+
+        // matchWebGLToCanvasSize: false,
+        // devicePixelRatio: 1,
+
+      }).then((unityInstance) => {
+
+#if SHOW_DIAGNOSTICS
+        document.getElementById("diagnostics-icon").onclick = () => {
+            unityDiagnostics.openDiagnosticsDiv(unityInstance.GetMetricsInfo);
+        };
+#endif
+
+      }).catch((message) => {
+        alert(message);
+      });
+    </script>
+
+  </body>
+</html>

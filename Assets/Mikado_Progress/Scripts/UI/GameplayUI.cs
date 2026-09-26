@@ -35,7 +35,6 @@ namespace Mikado.UI
             if (currentCount >= targetCount)
             {
                 // Open Win Panel
-                Debug.Log($" hi u win");
                 GameEventBus.TriggerLevelWon();
             }
         }

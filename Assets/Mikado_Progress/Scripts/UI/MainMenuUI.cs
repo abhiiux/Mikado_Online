@@ -4,16 +4,9 @@ namespace Mikado.UI
 {
     public class MainMenuUI : MonoBehaviour
     {
-        // Start is called once before the first execution of Update after the MonoBehaviour is created
-        void Start()
+        public void Quit()
         {
-        
-        }
-
-        // Update is called once per frame
-        void Update()
-        {
-        
+            Application.Quit();
         }
     }
 }

@@ -5,7 +5,10 @@ Physics-based Mikado adaptation — sticks settle, you select one, lift it witho
 [Play in browser](https://play.unity.com/api/v1/games/game/83b9e6b1-d33b-41dc-8a3e-610ec8c7c381/build/latest/frame)
 
 <!-- HERO PLACEHOLDER: add screenshot/GIF manually via github.com -->
+<img width="640" height="357" alt="Screenshot 2026-09-27 at 2 01 45 AM" src="https://github.com/user-attachments/assets/43b9ad81-163d-4f41-8bd4-2711748ac5c6" />
 <!-- Suggested: settled pile + one outlined selected stick. Path: docs/hero.png -->
+<img width="643" height="241" alt="Screenshot 2026-09-27 at 2 02 45 AM" src="https://github.com/user-attachments/assets/308c710b-67bf-48fb-8849-65b1d49c37cc" />
+
 
 ## What this shows
 

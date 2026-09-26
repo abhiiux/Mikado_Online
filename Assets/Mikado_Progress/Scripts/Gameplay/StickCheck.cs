@@ -185,12 +185,6 @@ namespace Mikado.Gameplay
             baselineVelocity[stick] = rb != null ? rb.linearVelocity : Vector3.zero;
         }
         overThresholdStreak.Clear();
-
-        // Diagnostic: log max velocity at capture to tune carry-over handling without blocking selection.
-        float maxVel = 0f;
-        foreach (var v in baselineVelocity.Values) maxVel = Mathf.Max(maxVel, v.magnitude);
-        if (maxVel > 0.05f)
-            Debug.Log($"[StickCheck] CaptureBaseline maxVel={maxVel:F3} (carry-over risk — {attemptBaseline.Count} sticks)");
     }
 
     // Legacy BeginAttempt kept for external callers if any — forwards to CaptureBaseline.
@@ -270,8 +264,8 @@ namespace Mikado.Gameplay
 
                 if (streak == debounceTicks) // fire once, the moment it's been sustained long enough
                 {
-                    Log("Movement Detected!");
-                    Debug.Log($"Distance moved for {stick.name}: {distanceMoved} (sustained {debounceTicks} checks)");
+                    // Log("Movement Detected!");
+                    // Debug.Log($"Distance moved for {stick.name}: {distanceMoved} (sustained {debounceTicks} checks)");
                     DeselectMonitoredStick(); // cancel this pickup attempt — the player caused an illegal move
                     ObjectPoints objectPoints = stick.GetComponent<ObjectPoints>();
                     if (objectPoints != null)
@@ -297,6 +291,10 @@ namespace Mikado.Gameplay
         if (monitoredObjectPoints != null)
         {
             monitoredObjectPoints.SetSelection(false);
+            if (monitoredTarget.TryGetComponent<Rigidbody>(out var rb)) {
+                rb.useGravity = true;
+                rb.WakeUp();
+            }
         }
 
         // Keep _lastSelectedIndex in sync so the next real selection doesn't try to
@@ -338,7 +336,7 @@ namespace Mikado.Gameplay
     {
         if (isLog)
         {
-            text.text = message;
+            text.text = $"<b>{message}</b>";
         }
     }
     }

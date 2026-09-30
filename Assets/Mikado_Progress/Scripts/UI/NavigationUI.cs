@@ -67,8 +67,6 @@ namespace Mikado.UI
         {
             if (isOpen) Close();
             else Open();
-
-            Debug.Log($" hey  ");
         }
 
         public void PauseButton()

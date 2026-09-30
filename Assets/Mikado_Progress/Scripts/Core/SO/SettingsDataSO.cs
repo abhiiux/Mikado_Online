@@ -9,6 +9,10 @@ namespace Mikado
         [Tooltip("When off, mobile controls (pick-up button, touch camera) are disabled and zoom slider is hidden.")]
         public bool mobileInputEnabled = true;
 
+        [Header("Camera")]
+        [Tooltip("ON = camera moves toward newly selected stick (classic). OFF = camera stays put and only looks at it.")]
+        public bool moveCameraToTarget = true;
+
         [Header("Camera Sensitivity (multipliers)")]
         [Range(0.1f, 3f)] public float rotationSensitivity = 1f;
         [Range(0.1f, 3f)] public float zoomSensitivity = 1f;

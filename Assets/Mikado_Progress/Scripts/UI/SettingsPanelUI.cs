@@ -9,7 +9,8 @@ namespace Mikado.UI
     /// MainMenu-only settings panel. Buffered until Apply.
     /// Hierarchy (screenshot):
     ///   SettingsPanel/Content
-    ///     MobileInputToggle/Toggle (with Background/Label)
+    ///   MobileInputToggle/Toggle (with Background/Label)
+    ///   CameraFollowToggle/Toggle (with Background/Label)
     ///     Zoom Sensitivity Slider/TextParent/Text (TMP) + Slider
     ///     Rotation Sensitivity Slider/TextParent/Text (TMP) + Slider
     ///     Height Sensitivity Slider/TextParent/Text (TMP) + Slider
@@ -28,6 +29,10 @@ namespace Mikado.UI
         [Header("Mobile Input Toggle")]
         [Tooltip("SettingsPanel/Content/MobileInputToggle/Toggle")]
         [SerializeField] private Toggle mobileToggle;
+
+        [Header("Camera Follow Toggle")]
+        [Tooltip("SettingsPanel/Content/CameraFollowToggle/Toggle — ON = camera moves to selected stick, OFF = look only")]
+        [SerializeField] private Toggle cameraFollowToggle;
 
         [Header("Sensitivity - Sliders")]
         [Tooltip("SettingsPanel/Content/Zoom Sensitivity Slider/Slider")]
@@ -51,6 +56,7 @@ namespace Mikado.UI
 
         // Pending buffer — applied to SO only on Apply
         private bool pendingMobile;
+        private bool pendingCameraFollow;
         private float pendingZoom;
         private float pendingRotation;
         private float pendingHeight;
@@ -72,6 +78,8 @@ namespace Mikado.UI
         {
             if (mobileToggle != null)
                 mobileToggle.onValueChanged.AddListener(OnMobileToggled);
+            if (cameraFollowToggle != null)
+                cameraFollowToggle.onValueChanged.AddListener(OnCameraFollowToggled);
             if (zoomSlider != null)
                 zoomSlider.onValueChanged.AddListener(OnZoomPending);
             if (rotationSlider != null)
@@ -88,6 +96,8 @@ namespace Mikado.UI
         {
             if (mobileToggle != null)
                 mobileToggle.onValueChanged.RemoveListener(OnMobileToggled);
+            if (cameraFollowToggle != null)
+                cameraFollowToggle.onValueChanged.RemoveListener(OnCameraFollowToggled);
             if (zoomSlider != null)
                 zoomSlider.onValueChanged.RemoveListener(OnZoomPending);
             if (rotationSlider != null)
@@ -107,12 +117,15 @@ namespace Mikado.UI
             suppressEvents = true;
 
             pendingMobile = settingsData.mobileInputEnabled;
+            pendingCameraFollow = settingsData.moveCameraToTarget;
             pendingZoom = settingsData.zoomSensitivity;
             pendingRotation = settingsData.rotationSensitivity;
             pendingHeight = settingsData.heightSensitivity;
 
             if (mobileToggle != null)
                 mobileToggle.SetIsOnWithoutNotify(pendingMobile);
+            if (cameraFollowToggle != null)
+                cameraFollowToggle.SetIsOnWithoutNotify(pendingCameraFollow);
 
             if (zoomSlider != null)
             {
@@ -164,6 +177,14 @@ namespace Mikado.UI
             SetApplyInteractable(true);
         }
 
+        private void OnCameraFollowToggled(bool value)
+        {
+            if (suppressEvents) return;
+            pendingCameraFollow = value;
+            hasPending = true;
+            SetApplyInteractable(true);
+        }
+
         private void OnZoomPending(float value)
         {
             if (suppressEvents) return;
@@ -197,6 +218,7 @@ namespace Mikado.UI
 
             // Pending → SO in-memory (no PlayerPrefs, no SetDirty)
             settingsData.mobileInputEnabled = pendingMobile;
+            settingsData.moveCameraToTarget = pendingCameraFollow;
             settingsData.zoomSensitivity = pendingZoom;
             settingsData.rotationSensitivity = pendingRotation;
             settingsData.heightSensitivity = pendingHeight;

@@ -40,6 +40,8 @@ namespace Mikado.Gameplay
             for (int i = 0; i < noOfSticks; i++)
             {
                 GameObject t =  Instantiate( prefabStick, parentObject );
+                var pts = t.GetComponent<ObjectPoints>();
+                if (pts != null) pts.StickId = i;
                 childrens.Add( t.transform );
             }
 

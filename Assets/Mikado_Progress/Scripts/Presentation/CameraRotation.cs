@@ -34,7 +34,15 @@ namespace Mikado.Presentation
         [SerializeField] private SettingsDataSO settingsData;
 
         private bool isMoving;
+        private bool lookOnlyActive;
         private float currentAngle;
+
+        // Runtime orbit bounds. Widen when a look-only rebase lands the camera
+        // outside the design range, so the first input never snaps the camera.
+        private float boundMinRadius;
+        private float boundMaxRadius;
+        private float boundMinHeight = 1f;
+        private float boundMaxHeight = 8f;
 
         private Transform currentTarget;
         private Vector3 lookTarget;
@@ -80,6 +88,7 @@ namespace Mikado.Presentation
             GameEventBus.OnTargetChange -= HandleTargetChange;
 
             targetTween?.Kill();
+            lookOnlyActive = false;
         }
 
         private void Start()
@@ -94,6 +103,11 @@ namespace Mikado.Presentation
                 minOrbitRadius,
                 maxOrbitRadius
             );
+
+            boundMinRadius = minOrbitRadius;
+            boundMaxRadius = maxOrbitRadius;
+            boundMinHeight = 1f;
+            boundMaxHeight = 8f;
 
             if (zoomSlider != null)
             {
@@ -124,6 +138,14 @@ namespace Mikado.Presentation
                 effectiveZoom = 0f;
             }
 
+            // Hold orbit/zoom input while a look-only retarget is animating,
+            // otherwise the completion rebase would clobber fresh input (and vice versa).
+            if (lookOnlyActive)
+            {
+                effectiveDirection = Vector2.zero;
+                effectiveZoom = 0f;
+            }
+
             // Keyboard / gamepad rotation
             if (effectiveDirection != Vector2.zero)
             {
@@ -133,8 +155,8 @@ namespace Mikado.Presentation
                 heightOffset = Mathf.Clamp(
                     heightOffset +
                     effectiveDirection.y * heightSpeed * heightSens * Time.deltaTime,
-                    1f,
-                    8f
+                    boundMinHeight,
+                    boundMaxHeight
                 );
             }
 
@@ -218,8 +240,8 @@ namespace Mikado.Presentation
         {
             orbitRadius = Mathf.Clamp(
                 orbitRadius - zoom,
-                minOrbitRadius,
-                maxOrbitRadius
+                boundMinRadius,
+                boundMaxRadius
             );
 
             // Keep the slider in step when zooming via keyboard
@@ -239,12 +261,16 @@ namespace Mikado.Presentation
                 z
             );
 
-            transform.position = Vector3.SmoothDamp(
-                transform.position,
-                targetPosition,
-                ref cameraVelocity,
-                movementSmoothTime
-            );
+            // Look-only retarget: position is frozen; the tween sets it each tick.
+            if (!lookOnlyActive)
+            {
+                transform.position = Vector3.SmoothDamp(
+                    transform.position,
+                    targetPosition,
+                    ref cameraVelocity,
+                    movementSmoothTime
+                );
+            }
 
             transform.LookAt(lookTarget);
         }
@@ -265,18 +291,76 @@ namespace Mikado.Presentation
         {
             targetTween?.Kill();
 
+            bool moveCamera = settingsData == null || settingsData.moveCameraToTarget;
+
+            if (moveCamera)
+            {
+                lookOnlyActive = false;
+
+                targetTween = DOTween.To(
+                    () => lookTarget,
+                    value =>
+                    {
+                        lookTarget = value;
+                        currentTarget = newTarget;
+
+                        UpdateCameraPosition();
+                    },
+                    newTarget.position,
+                    targetChangeDuration
+                ).SetEase(Ease.InOutQuad);
+
+                return;
+            }
+
+            // Look-only: hold position, rotate toward the new target, then
+            // silently rebase the orbit onto it (no jump on the next manual move).
+            // Snapshot the target position at entry: the selected stick is a live
+            // Rigidbody (PickUpController impulse), so re-reading newTarget.position
+            // in OnComplete would bake mid-tween physics motion into the persistent
+            // orbit params (heightOffset/orbitRadius jump + polluted bounds).
+            Vector3 frozenPos = transform.position;
+            Transform desiredTarget = newTarget;
+            Vector3 desiredLook = newTarget.position;
+            lookOnlyActive = true;
+
             targetTween = DOTween.To(
                 () => lookTarget,
                 value =>
                 {
                     lookTarget = value;
-                    currentTarget = newTarget;
+                    currentTarget = desiredTarget;
 
-                    UpdateCameraPosition();
+                    transform.position = frozenPos;
+                    transform.LookAt(lookTarget);
                 },
-                newTarget.position,
+                desiredLook,
                 targetChangeDuration
-            ).SetEase(Ease.InOutQuad);
+            ).SetEase(Ease.InOutQuad).OnComplete(() =>
+            {
+                lookTarget = desiredLook;
+                currentTarget = desiredTarget;
+
+                Vector3 offset = frozenPos - lookTarget;
+
+                // Exact rebase: params must reproduce frozenPos precisely, or the
+                // next SmoothDamp would glide the camera. Widen bounds instead of
+                // clamping, so later input keeps moving smoothly from here.
+                heightOffset = offset.y;
+                orbitRadius = new Vector2(offset.x, offset.z).magnitude;
+                currentAngle = Mathf.Atan2(offset.x, offset.z) * Mathf.Rad2Deg;
+
+                boundMinRadius = Mathf.Min(boundMinRadius, orbitRadius);
+                boundMaxRadius = Mathf.Max(boundMaxRadius, orbitRadius);
+                boundMinHeight = Mathf.Min(boundMinHeight, heightOffset);
+                boundMaxHeight = Mathf.Max(boundMaxHeight, heightOffset);
+
+                cameraVelocity = Vector3.zero;
+                lookOnlyActive = false;
+
+                SyncSliderToRadius();
+                UpdateCameraPosition();
+            });
         }
 
         #endregion

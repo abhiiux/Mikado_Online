@@ -16,6 +16,10 @@ namespace Mikado.Core
         [HideInInspector] public bool isFlagged = false;
         [HideInInspector] public bool isTarget = false;
 
+        // Stable network-friendly ID, assigned at spawn by CreateSticks.
+        // -1 = unassigned (StickCheck falls back to spawn index).
+        public int StickId { get; set; } = -1;
+
         public SticksState currentState = SticksState.Active;//needs update
         private Rigidbody rb;
         private Renderer ownRenderer;

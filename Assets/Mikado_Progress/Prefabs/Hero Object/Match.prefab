@@ -29,13 +29,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3051967657015174792}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -1.91, y: -8.9, z: -0.114}
+  m_LocalRotation: {x: 0.21143645, y: 0.09293455, z: -0.14439225, w: 0.96218956}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 2, y: 2, z: 2}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 25.704, y: 7.511, z: -15.353}
 --- !u!33 &5253109335445544489
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -69,7 +69,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: -5674297127517937651, guid: 170c46cc91aa64d75abccef17618dc4e, type: 3}
+  - {fileID: 2100000, guid: a89c606dacf1740039640a98c4d870fe, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -131,6 +131,7 @@ MonoBehaviour:
   nameStick: One
   isFlagged: 0
   isTarget: 0
+  currentState: 0
 --- !u!54 &4130884063636278857
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -157,4 +158,4 @@ Rigidbody:
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 0
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1

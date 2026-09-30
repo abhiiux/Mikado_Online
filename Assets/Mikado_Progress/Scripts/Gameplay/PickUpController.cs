@@ -45,12 +45,17 @@ namespace Mikado.Gameplay
         private void ApplyUpWardForce()
         {
             if ( pickUpObject == null) return;
+            if (forceDirection == null) return;
             Rigidbody rb =  pickUpObject.GetComponent<Rigidbody>();
+            if (rb == null) return;
             rb.useGravity = false;
-            
-            Vector3 impulseVector = forceDirection.position * forceMagnitude;
 
-            rb.AddForce(impulseVector, ForceMode.Force);
+            // Fixed direction + fixed magnitude per turn so moves are reproducible
+            // (and later validatable by the host). forceDirection is a direction
+            // handle — use its forward, not its world position.
+            Vector3 impulseVector = forceDirection.up.normalized * forceMagnitude;
+
+            rb.AddForce(impulseVector, ForceMode.Impulse);
         }
     }
 }

@@ -760,6 +760,7 @@ MonoBehaviour:
   text: {fileID: 795644730}
   moveThreshold: 0.3
   debounceTicks: 5
+  angleThresholdDeg: 5
 --- !u!4 &235839545
 Transform:
   m_ObjectHideFlags: 0
@@ -801,7 +802,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CreateSticks
   noOfSticks: 15
   stickCounterValue: {fileID: 11400000, guid: 1897a01e1fdc14256b5f68ceae46fb5b, type: 2}
-  prefabStick: {fileID: 5652852228813305998, guid: d2b5e05a683574fe39d66d55870990e8, type: 3}
+  prefabStick: {fileID: 3051967657015174792, guid: 0467c9321def341ea85bc8f353077a5b, type: 3}
   radius: 2
   radiusVariance: 0.5
   sortOnStart: 0
@@ -2892,6 +2893,10 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: d1c849ea56cbb4a428d54f8d7e9fac1c, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -3405,7 +3410,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 5.2, z: 0}
-  m_LocalScale: {x: 5, y: 0.5, z: 5}
+  m_LocalScale: {x: 5, y: 2, z: 5}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 953500052}
@@ -4551,7 +4556,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: -1.295, z: 0}
-  m_LocalScale: {x: 2.5, y: 0.5, z: 2.5}
+  m_LocalScale: {x: 2.5, y: 2, z: 2.5}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 953500052}

@@ -14,13 +14,15 @@ namespace Mikado.UI
         [SerializeField] private TMP_Text stickSelected;
         [SerializeField] private TMP_Text timePlayed;
         [SerializeField] private CanvasGroup winPanel;
+        [SerializeField] private CanvasGroup retryPanel;
 
         [Header(" Panel Data ")]
         [SerializeField] private WinPanelDetailsSO panelData;
         [SerializeField] private StickCounterValue counterData;
 
-        [Header(" NextLevel Button ")]
+        [Header(" UI Buttons ")]
         [SerializeField] private Button nextLevelButton;
+        [SerializeField] private Button tryAgainButton;
 
         [Header(" Navigation ")]
         [SerializeField] private UnityEvent pauseButton;
@@ -29,31 +31,40 @@ namespace Mikado.UI
         void OnEnable()
         {
             GameEventBus.OnLevelWon += HandleWinPanelOpen;
+            GameEventBus.OnGameOver += HandleRetryPanelOpen;
             GameEventBus.OnLevelWon += IncrementStickCounter;
             nextLevelButton.onClick.AddListener( NextLevel );
+            tryAgainButton.onClick.AddListener( RetryButton );
         }
         void OnDisable()
         {
             GameEventBus.OnLevelWon -= HandleWinPanelOpen;
+            GameEventBus.OnGameOver -= HandleRetryPanelOpen;
             GameEventBus.OnLevelWon -= IncrementStickCounter;
             nextLevelButton.onClick.RemoveListener( NextLevel );
+            tryAgainButton.onClick.RemoveListener( RetryButton );
         }
         void Awake()
         {
-            winPanel.alpha = 0;
             // Invisible must also mean non-blocking: CanvasGroup.blocksRaycasts
             // is independent of alpha, so without this the hidden Win panel
             // (rendered above the corner menu) swallows every click.
-            winPanel.blocksRaycasts = false;
-            winPanel.interactable = false;
+            SetPanelVisible( winPanel, false);
+            SetPanelVisible( retryPanel, false);
         }
         private void HandleWinPanelOpen()
         {
             UpdatePanelDetails();
 
-            winPanel.alpha = 1;          //Shows Panel
-            winPanel.blocksRaycasts = true;
-            winPanel.interactable = true;
+            SetPanelVisible( winPanel, true);
+
+            pauseButton.Invoke();
+        }
+        private void HandleRetryPanelOpen()
+        {
+            // UpdatePanelDetails();
+
+            SetPanelVisible( retryPanel, true);
 
             pauseButton.Invoke();
         }
@@ -72,9 +83,20 @@ namespace Mikado.UI
             pauseButton.Invoke(); //UnPause
             restartButton.Invoke();
         }
+        private void RetryButton()
+        {
+            pauseButton.Invoke(); //UnPause
+            restartButton.Invoke();
+        }
         private void IncrementStickCounter()
         {
             counterData.IncrementCurrentStickCount();
+        }
+        private void SetPanelVisible(CanvasGroup panel, bool visible)
+        {
+            panel.alpha = visible ? 1f : 0f;
+            panel.blocksRaycasts = visible;
+            panel.interactable = visible;
         }
     }
 }

@@ -22,6 +22,16 @@ namespace Mikado.Core
         public static event Action<Renderer> OnStickMovementDetected;
         public static void TriggerMovementDetection(Renderer renderer) => OnStickMovementDetected?.Invoke(renderer);
 
+        //
+        public static event Action OnFoulCommitted;
+        public static void TriggerFoul() => OnFoulCommitted?.Invoke();
+        //
+        public static event Action<int> OnLifeLost;
+        public static void TriggerLifeLost(int lives) => OnLifeLost?.Invoke(lives);
+
+        //
+        public static event Action OnGameOver;
+        public static void TriggerGameOver() => OnGameOver?.Invoke();
 
         // [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
         // public static void ResetAllListeners()

@@ -343,6 +343,7 @@ namespace Mikado.Gameplay
         {
             fouledRec.points?.ToggleRedVisual();
         }
+        GameEventBus.TriggerFoul();
     }
 
     // Called when a bystander stick's movement has been confirmed illegal (sustained

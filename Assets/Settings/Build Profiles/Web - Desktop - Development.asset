@@ -38,7 +38,7 @@ MonoBehaviour:
     - line: '|   useOnDemandResources: 0'
     - line: '|   accelerometerFrequency: 60'
     - line: '|   companyName: Fat_Piixel'
-    - line: '|   productName: Mikado_V4.0.1'
+    - line: '|   productName: Mikado_V5.0.0'
     - line: '|   defaultCursor: {instanceID: 0}'
     - line: '|   cursorHotspot: {x: 0, y: 0}'
     - line: '|   m_SplashScreenBackgroundColor: {r: 0.13725491, g: 0.12156863, b:
@@ -174,7 +174,7 @@ MonoBehaviour:
     - line: '|   loadStoreDebugModeEnabled: 0'
     - line: '|   visionOSBundleVersion: 1.0'
     - line: '|   tvOSBundleVersion: 1.0'
-    - line: '|   bundleVersion: 0.1.7'
+    - line: '|   bundleVersion: 2.0.0'
     - line: '|   preloadedAssets: []'
     - line: '|   metroInputSource: 0'
     - line: '|   wsaTransparentSwapchain: 0'
@@ -1008,7 +1008,7 @@ MonoBehaviour:
     - rid: 1320307181180420154
       type: {class: WebGLPlatformSettings, ns: UnityEditor.WebGL, asm: UnityEditor.WebGL.Extensions}
       data:
-        m_Development: 1
+        m_Development: 0
         m_ConnectProfiler: 0
         m_BuildWithDeepProfilingSupport: 0
         m_BuildWithCodeCoverage: 0
@@ -1026,4 +1026,4 @@ MonoBehaviour:
         m_CodeOptimization: 0
         m_WebGLClientBrowserPath: 
         m_WebGLClientBrowserType: 0
-        m_WebGLTextureSubtarget: 1
+        m_WebGLTextureSubtarget: 4

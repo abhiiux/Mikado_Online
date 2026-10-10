@@ -88,3 +88,6 @@ crashlytics-build.properties
 AGENTS.md
 Mikado_Context_For_Web.md
 Data/Plugins/lib_burst_generated.wasm
+global.json
+Packages/packages-lock.json
+Packages/manifest.json

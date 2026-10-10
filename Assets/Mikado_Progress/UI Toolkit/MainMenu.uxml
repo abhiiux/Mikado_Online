@@ -1,0 +1,31 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <Style src="project://database/Assets/Mikado_Progress/UI%20Toolkit/MainMenu.uss?fileID=7433441132597879392&amp;guid=839730e9296c34050a061ce5765bcbd2&amp;type=3#MainMenu"/>
+    <ui:VisualElement name="screen" class="screen">
+        <ui:Button name="settings-button" text="S" class="settings-button"/>
+        <ui:VisualElement name="menu-buttons" class="menu-buttons">
+            <ui:Button name="play-button" text="Play" class="menu-button"/>
+            <ui:Button name="quit-button" text="Quit" class="menu-button"/>
+        </ui:VisualElement>
+        <ui:VisualElement name="settings-panel" class="settings-panel">
+            <ui:Label text="Settings" class="title"/>
+            <ui:Toggle name="mobile-toggle" text="Mobile Input"/>
+            <ui:Toggle name="camera-follow-toggle" text="Camera Follow"/>
+            <ui:VisualElement class="setting-row">
+                <ui:Slider name="zoom-slider" label="Zoom Sensitivity" low-value="0.1" high-value="3"/>
+                <ui:Label name="zoom-value"/>
+            </ui:VisualElement>
+            <ui:VisualElement class="setting-row">
+                <ui:Slider name="rotation-slider" label="Rotation Sensitivity" low-value="0.1" high-value="3"/>
+                <ui:Label name="rotation-value"/>
+            </ui:VisualElement>
+            <ui:VisualElement class="setting-row">
+                <ui:Slider name="height-slider" label="Height Sensitivity" low-value="0.1" high-value="3"/>
+                <ui:Label name="height-value"/>
+            </ui:VisualElement>
+            <ui:VisualElement class="footer">
+                <ui:Button name="apply-button" text="Apply"/>
+                <ui:Button name="close-button" text="Close"/>
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

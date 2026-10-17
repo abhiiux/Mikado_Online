@@ -1,6 +1,7 @@
 using DG.Tweening;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 using Mikado.Core;
 
 namespace Mikado.UI
@@ -16,21 +17,29 @@ namespace Mikado.UI
         [Header("Heart Animation")]
         [SerializeField] private float heartHideDuration = 0.35f;
         [SerializeField] private Ease heartHideEase = Ease.InBack;
+        [SerializeField] private Sprite brokenHeartSprite;
 
         private int targetCount;
         private int currentCount;
         private Tween[] heartTweens;
         private Vector3[] heartBaseScales;
+        private Image[] heartImages;
+        private Sprite[] heartOriginalSprites;
 
         void Awake()
         {
             heartTweens = new Tween[hearts.Length];
             heartBaseScales = new Vector3[hearts.Length];
+            heartImages = new Image[hearts.Length];
+            heartOriginalSprites = new Sprite[hearts.Length];
 
             for (int i = 0; i < hearts.Length; i++)
             {
                 if (hearts[i] == null) continue;
                 heartBaseScales[i] = hearts[i].transform.localScale;
+                heartImages[i] = hearts[i].GetComponent<Image>();
+                if (heartImages[i] != null)
+                    heartOriginalSprites[i] = heartImages[i].sprite;
             }
         }
         void OnEnable()
@@ -83,6 +92,9 @@ namespace Mikado.UI
         {
             heartTweens[index]?.Kill();
 
+            if (heartImages[index] != null && brokenHeartSprite != null)
+                heartImages[index].sprite = brokenHeartSprite;
+
             heartTweens[index] = hearts[index].transform
                 .DOScale(Vector3.zero, heartHideDuration)
                 .SetEase(heartHideEase)
@@ -97,6 +109,8 @@ namespace Mikado.UI
 
                 heartTweens[i]?.Kill();
                 hearts[i].transform.localScale = heartBaseScales[i];
+                if (heartImages[i] != null && heartOriginalSprites[i] != null)
+                    heartImages[i].sprite = heartOriginalSprites[i];
                 hearts[i].SetActive(i < livesLeft);
             }
         }

@@ -33,6 +33,10 @@ namespace Mikado.Core
         public static event Action OnGameOver;
         public static void TriggerGameOver() => OnGameOver?.Invoke();
 
+        //
+        public static event Action OnStickPickup;
+        public static void TriggerStickPlay() => OnStickPickup?.Invoke();
+
         // [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
         // public static void ResetAllListeners()
         // {

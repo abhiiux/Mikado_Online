@@ -40,6 +40,8 @@ namespace Mikado.Gameplay
         private void HandlePickUp(InputAction.CallbackContext context)
         {
             ApplyUpWardForce();
+
+            GameEventBus.TriggerStickPlay();
         }
 
         private void ApplyUpWardForce()

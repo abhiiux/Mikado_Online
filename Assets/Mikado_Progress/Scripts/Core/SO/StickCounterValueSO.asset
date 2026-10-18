@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3ad2cc82a080a43ffb787d52e8abc4f3, type: 3}
   m_Name: StickCounterValueSO
   m_EditorClassIdentifier: Mikado.Presentation::StickCounterValue
-  IncrementalValue: 3
-  CurrentStickCount: 0
-  MinStickCount: 5
-  MaxStickCount: 20
+  incrementalValue: 3
+  currentStickCount: 5
+  minStickCount: 5
+  maxStickCount: 26

@@ -38,6 +38,7 @@ namespace Mikado.UI
             GameEventBus.OnLevelWon += HandleWinPanelOpen;
             GameEventBus.OnGameOver += HandleGameOverPanelOpen;
             GameEventBus.OnLevelWon += IncrementStickCounter;
+            GameEventBus.OnStickPickup += UpdateStickPickup;
             nextLevelButton.onClick.AddListener( PrimaryButton );
         }
         void OnDisable()
@@ -45,6 +46,7 @@ namespace Mikado.UI
             GameEventBus.OnLevelWon -= HandleWinPanelOpen;
             GameEventBus.OnGameOver -= HandleGameOverPanelOpen;
             GameEventBus.OnLevelWon -= IncrementStickCounter;
+            GameEventBus.OnStickPickup -= UpdateStickPickup;
             nextLevelButton.onClick.RemoveListener( PrimaryButton );
         }
         void Awake()
@@ -71,7 +73,6 @@ namespace Mikado.UI
             UpdatePanelDetails();
 
             SetPanelVisible( winPanel, true);
-
             pauseButton.Invoke();
         }
 
@@ -84,27 +85,23 @@ namespace Mikado.UI
             timePlayed.text = panelData.GetTimeSpend();
         }
 
+        private void UpdateStickPickup()
+        {
+            panelData.UpdateStickSelection();
+        }
+
         private void PrimaryButton()
         {
             pauseButton.Invoke(); //UnPause
 
-            if( _isWin)
-            {
-                int nextIndex = SceneManager.GetActiveScene().buildIndex + 1;
-                if( nextIndex >= SceneManager.sceneCountInBuildSettings)
-                {
-                    // Last scene in build order: fall back to the main menu.
-                    SceneLoader.Instance.LoadScene( 0);
-                }
-                else
-                {
-                    SceneLoader.Instance.LoadNextScene();
-                }
-            }
-            else
-            {
+            // if( _isWin)
+            // {
+
+            // }
+            // else
+            // {
                 restartButton.Invoke();
-            }
+            // }
         }
         private void IncrementStickCounter()
         {

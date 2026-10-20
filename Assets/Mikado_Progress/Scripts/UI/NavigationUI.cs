@@ -76,6 +76,8 @@ namespace Mikado.UI
         }
         public void BackButton()
         {
+            if(paused) PauseButton();
+            
             int index = SceneManager.GetActiveScene().buildIndex - 1;
             SceneLoader.Instance.LoadScene( index );
         }
